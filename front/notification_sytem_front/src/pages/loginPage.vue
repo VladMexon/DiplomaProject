@@ -4,10 +4,11 @@
       <div class="loginForm">
         <div class="items">
           <h2>Вход</h2>
+          <p v-if="error" class="errorMessage">Неверный логин или пароль</p>
+          <p v-if="v$.form.login.$error" class="errorMessage">Логин должен быть больше 3 символов</p>
           <input type="text" v-model.trim="form.login" placeholder="Логин" :class="{'invalid': v$.form.login.$error}">
-          <p v-if="v$.form.login.$error">Логин должен быть больше 3 символов</p>
+          <p v-if="v$.form.password.$error" class="errorMessage">Пароль должен быть больше 3 символов</p>
           <input type="password" v-model.trim="form.password" placeholder="Пароль" :class="{'invalid': v$.form.password.$error}">
-          <p v-if="v$.form.password.$error">Пароль должен быть больше 3 символов</p>
           <button type="submit">Войти</button>
         </div>
       </div>
@@ -28,18 +29,24 @@ import { required, minLength } from '@vuelidate/validators'
         form: {
           login: '',
           password: ''
-        }
+        },
+        error: false
       }
     },
     components: {
       headerComponent
     },
     methods: {
-      logInto(){
+      async logInto(){
         this.v$.form.$touch()
-        console.log(`${this.form.login}:${this.form.password}`);
-        if(this.form.login == 'admin' && this.form.password == 'admin'){ //затычка
-          this.$router.push({name: 'mainPage'})
+        try{
+          const response = await this.$api.auth.login(this.form)
+          if(response.status == 200){
+            this.$store.dispatch('user/setUser', response.data)
+            this.$router.push({name: 'mainPage'});
+          }
+        }catch(e){
+          this.error = true;
         }
       }
     },
@@ -98,6 +105,12 @@ import { required, minLength } from '@vuelidate/validators'
 }
 .items h2{
   margin: 0px;
+}
+.errorMessage{
+  font-size: 12px;
+  color: red;
+  margin: 0px;
+  margin-top: 5px;
 }
 </style>
   

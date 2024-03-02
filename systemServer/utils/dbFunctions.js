@@ -2,7 +2,7 @@ import {db} from './dbContext.js';
 
 const goodCode = function(queryResult){
     return {
-        code: 1,
+        code: 0,
         message: 'This is fine',
         data: queryResult
     }

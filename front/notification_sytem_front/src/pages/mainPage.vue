@@ -1,10 +1,14 @@
 <template>
-Main page
+  <headerComponent/>
 </template>
   
 <script>
+import headerComponent from '../components/header.vue'
 export default {
     name: 'mainPage',
+    components: {
+      headerComponent
+    },
     data(){
       return {
         

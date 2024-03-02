@@ -7,7 +7,7 @@ const roleMiddleware = (roles) => {
             next();
         }
         try {
-            const token = req.headers.authorization.split(' ')[1];
+            const token = req.cookies.Authorization.split(' ')[1];
             if(!token){
                 return res.status(403).json({code: 0, message:"Unauthorized"});
             }
