@@ -15,21 +15,32 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => { //kill it with fire!!!!!
-    if (to.name !== 'loginPage' && !store.getters['user/getUser']) {
-        badThing.myInfo.get().then(response => {
-        if (response.status === 200) {
-          store.dispatch('user/setUser', response.data);
-          next();
-        } else {
-          next({ name: 'loginPage' });
-        }
+  if(!store.getters['user/getUser']){
+    if(to.name != 'loginPage'){
+      badThing.myInfo.get().then((response) => {
+        store.commit('user/SET_USER', response.data)
+        next();
       }).catch(() => {
-        next({ name: 'loginPage' });
-      });
-    } else {
-      next();
+        return next({name : 'loginPage'})
+      })
+    }else{
+      badThing.myInfo.get().then((response) => {
+        store.commit('user/SET_USER', response.data)
+        next({ name: 'mainPage'});
+      }).catch(() => {
+        return next()
+      })
     }
-  });
+  }
+  else{
+    if(to.name == 'loginPage'){
+      next({ name: 'mainPage'});
+    }
+    else{
+      next()
+    }
+  }
+});
 
 const app = createApp(App);
 app.use(router)

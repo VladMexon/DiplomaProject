@@ -19,7 +19,7 @@ const processQueryResult = function(result){
     return result.then(data => {
         return goodCode(data);
     }).catch(error => {
-        console.error(error);
+        //console.error(error);
         return badCode(error);
     });
 }

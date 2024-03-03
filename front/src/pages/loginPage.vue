@@ -16,7 +16,7 @@
 </template>
   
 <script>
-import headerComponent from '../components/header.vue'
+import headerComponent from '../components/headerComponent.vue';
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
   export default {
@@ -39,14 +39,16 @@ import { required, minLength } from '@vuelidate/validators'
     methods: {
       async logInto(){
         this.v$.form.$touch()
-        try{
+        if(!this.v$.form.$error){
+          try{
           const response = await this.$api.auth.login(this.form)
           if(response.status == 200){
             this.$store.dispatch('user/setUser', response.data)
             this.$router.push({name: 'mainPage'});
           }
-        }catch(e){
-          this.error = true;
+          }catch(e){
+            this.error = true;
+          }
         }
       }
     },

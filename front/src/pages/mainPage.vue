@@ -3,7 +3,7 @@
 </template>
   
 <script>
-import headerComponent from '../components/header.vue'
+import headerComponent from '../components/headerComponent.vue';
 export default {
     name: 'mainPage',
     components: {

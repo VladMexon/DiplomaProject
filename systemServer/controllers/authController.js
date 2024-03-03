@@ -38,12 +38,10 @@ class authController{
     }
     login(req, res){
         const {login, password} = req.body;
-        console.log(login, password);
         getCredentialsInfo(login).then((queryResult) => {
             if(!queryResult.data){
                 return res.status(400).json({code: 1, message: "Password or username is not right"});
             }
-            console.log(queryResult);
             const validPassword = bcrypt.compareSync(password, queryResult.data.password);
             if(!validPassword){
                 return res.status(400).json({code: 1, message: 'Password or username is not right'});
@@ -52,14 +50,18 @@ class authController{
             getEmployee(queryResult.data.id_employee).then((queryResult) =>{
                 return res.status(200).cookie('Authorization', "Bearer " + token, {expires: new Date(Date.now() + TOKEN_EXPIRES * 60 * 60 * 1000)}).json(queryResult.data);
             });
-             //установить secure и разобраться с cors policy
+             //установить secure и разобраться с cors policy и httpOnly(возсожно)
         })
-
-
     }
     getUser(req, res){
-        getAllEmployees().then((queryResult) => {
-            res.json(queryResult.data);
+        let id = req.user.id;
+        getEmployee(id).then((queryResult) => {
+            if(queryResult.code == 0){
+                res.status(200).send(queryResult.data);
+            }
+            else{
+                res.status(500).send(queryResult);
+            }
         });
     }
 }

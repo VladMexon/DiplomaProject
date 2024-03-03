@@ -11,6 +11,7 @@ router.post('/register', [
     check('password', "password must be more than 4 and less than 20 symbols").isLength({min: 4, max: 20})
 ], authController.register);
 router.post('/login', authController.login);
-router.get('/users', roleMiddleware(['admin']), authController.getUser);
+router.get('/user', authMiddleware, authController.getUser);
 
 export default router;
+
