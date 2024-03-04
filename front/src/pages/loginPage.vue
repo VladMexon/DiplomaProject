@@ -85,7 +85,7 @@ import { required, minLength } from '@vuelidate/validators'
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 35%;
+  width: 25%;
   background-color: #EEEEEE;
   padding: 30px;
   border-radius: 10px;

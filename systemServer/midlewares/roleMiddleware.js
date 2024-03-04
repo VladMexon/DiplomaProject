@@ -12,7 +12,6 @@ const roleMiddleware = (roles) => {
                 return res.status(403).json({code: 0, message:"Unauthorized"});
             }
             const {roles: userRoles} = jwt.verify(token, SECRET_KEY);
-            console.log(userRoles);
             let hasRole = false;
             userRoles.forEach(role => {
                 if(roles.includes(role)){

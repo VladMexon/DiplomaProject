@@ -1,4 +1,4 @@
-import {getCredentialsInfo, register, getAllEmployees, getEmployee} from '../utils/dbFunctions.js';
+import {getCredentialsInfo, register, getEmployee} from '../utils/dbFunctions.js';
 import bcrypt from 'bcryptjs';
 import {validationResult} from 'express-validator';
 import jwt from 'jsonwebtoken';
