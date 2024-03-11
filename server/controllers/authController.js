@@ -1,4 +1,3 @@
-const { errors } = require('pg-promise');
 const authService = require('../services/authService');
 const ApiError = require('../exeptions/apiError');
 const { validationResult } = require('express-validator');
@@ -21,9 +20,9 @@ class authController{
     async login(req, res, next){
         try{
             const {login, password} = req.body;
-            const userData = await authService.login(login, password);
-            res.cookie('refreshToken', userData.tokens.refreshToken, {maxAge: process.env.REFRESH_TOKEN_EXPIRES * 24 * 60 * 60 * 1000, httpOnly: true})
-            return res.json({accessToken: userData.tokens.accessToken, userData: userData.employeeInfo});
+            const payload = await authService.login(login, password);
+            res.cookie('refreshToken', payload.tokens.refreshToken, {maxAge: process.env.REFRESH_TOKEN_EXPIRES * 24 * 60 * 60 * 1000, httpOnly: true})
+            return res.json({accessToken: payload.tokens.accessToken, userData: payload.userData});
         }catch(e){
             next(e);
         }
@@ -31,8 +30,10 @@ class authController{
     async logout(req, res, next){
         try{
             const {refreshToken} = req.cookies;
+
             await authService.logout(refreshToken);
             res.clearCookie('refreshToken');
+
             return res.status(200).json('ok');
         }catch(e){
             next(e);
@@ -41,14 +42,14 @@ class authController{
     async refresh(req, res, next){
         try{
             const {refreshToken} = req.cookies;
-            const userData = await authService.refresh(refreshToken);
-            res.cookie('refreshToken', userData.tokens.refreshToken, {maxAge: process.env.REFRESH_TOKEN_EXPIRES * 24 * 60 * 60 * 1000, httpOnly: true})
-            return res.json({accessToken: userData.tokens.accessToken, userData: userData.employeeInfo});
+            const payload = await authService.refresh(refreshToken);
+            res.cookie('refreshToken', payload.tokens.refreshToken, {maxAge: process.env.REFRESH_TOKEN_EXPIRES * 24 * 60 * 60 * 1000, httpOnly: true})
+            return res.json({accessToken: payload.tokens.accessToken, userData: payload.employeeInfo});
         }catch(e){
             next(e);
         }
     }
-    async  user(req, res, next){
+    async  user(req, res, next){ 
         try{
             const id_employee = req.user.id_employee;
             const user_info = await authService.getUserInfo(id_employee);

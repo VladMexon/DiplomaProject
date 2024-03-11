@@ -17,7 +17,7 @@
 </template>
   
 <script>
-import { useCookies} from "vue3-cookies";
+//import { useCookies} from "vue3-cookies";
   export default {
     name: 'headerComponent',
     data() {
@@ -37,11 +37,9 @@ import { useCookies} from "vue3-cookies";
       }
     },
     methods: {
-        logout(){
-          const { cookies } = useCookies();
-          this.$store.commit('user/DELETE_USER');
-          cookies.remove('Authorization');
-          this.$router.push({ name: 'loginPage' });
+        async logout(){
+          await this.$store.dispatch('user/logout');
+          this.$router.push({name: "loginPage"});
         },
         openModal(){
           this.isModalOpen = !this.isModalOpen;

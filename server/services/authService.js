@@ -1,7 +1,7 @@
 const dbService = require('../services/dbService');
 const bcrypt = require('bcrypt');
 const tokenService = require('./tokenService');
-//const uuid = require('uuid'); //Пойдет в топку скорее всего
+//const uuid = require('uuid'); //Пойдет в топку скорее всего(использовалось для подверждения адреса электронной почты)
 const ApiError = require('../exeptions/apiError');
 
 
@@ -21,39 +21,39 @@ class authService{
         }
     }
     async login(login, password){
-        const user = await dbService.getCredentials(login);
-        if(!user){
+        const userCredentials = await dbService.getCredentials(login);
+        if(!userCredentials){
             throw ApiError.BadRequest('Неверный логи или пароль');
         }
-        const isPassEquals = await bcrypt.compare(password, user.password);
+        const isPassEquals = await bcrypt.compare(password, userCredentials.password);
         if(!isPassEquals){
             throw ApiError.BadRequest('Неверный логи или пароль');
         }
-        const employeeInfo = await dbService.getEmployee(user.id_employee);
-        const tokens = await tokenService.generateToken({id_employee: user.id_employee});
-        await tokenService.saveToken(tokens.refreshToken, user.id_employee);
+        const userData = await dbService.getEmployee(userCredentials.id_employee);
+        const tokens = await tokenService.generateToken({id_employee: userCredentials.id_employee, id_position: userData.id_position, time: Date.now()}); //ВАЖНО
+        await tokenService.saveToken(tokens.refreshToken, userCredentials.id_employee);
         return {
             tokens,
-            employeeInfo
+            userData: userData
         }
     }
-
 
     async logout(refresh_token){
         await dbService.deleteRefreshToken(refresh_token);
         return
     }
+
     async refresh(refresh_token){
         if(!refresh_token){
             throw ApiError.UnauthorizedError();
         }
-        const userData = tokenService.validateRefreshToken(refresh_token);
+        const userData = tokenService.validateRefreshToken(refresh_token); //id_employee, id_position
         const tokenFromDb = dbService.getRefreshToken(refresh_token);
         if(!userData || !tokenFromDb){
             throw ApiError.UnauthorizedError();
         }
         const employeeInfo = await dbService.getEmployee(userData.id_employee);
-        const tokens = await tokenService.generateToken({id_employee: userData.id_employee});
+        const tokens = await tokenService.generateToken({id_employee: userData.id_employee, id_position: userData.id_position, time: Date.now()}); //ВАЖНО
         await tokenService.saveToken(tokens.refreshToken, userData.id_employee);
         return {
             tokens,

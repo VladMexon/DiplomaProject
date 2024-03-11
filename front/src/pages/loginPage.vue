@@ -41,11 +41,8 @@ import { required, minLength } from '@vuelidate/validators'
         this.v$.form.$touch()
         if(!this.v$.form.$error){
           try{
-          const response = await this.$api.auth.login(this.form)
-          if(response.status == 200){
-            this.$store.dispatch('user/setUser', response.data)
-            this.$router.push({name: 'mainPage'});
-          }
+            await this.$store.dispatch('user/login', this.form);
+            this.$router.push({name: "mainPage"});
           }catch(e){
             this.error = true;
           }

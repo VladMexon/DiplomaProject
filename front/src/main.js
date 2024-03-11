@@ -4,7 +4,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import routes from './routers/index.js'
 import store from './store/index'
 import api from './plugins/api'
-import badThing from './api/index.js' //kill it with fire!!!!!
 
 
 
@@ -14,30 +13,21 @@ const router = createRouter({
     routes // short for `routes: routes`
 })
 
-router.beforeEach((to, from, next) => { //kill it with fire!!!!!
-  if(!store.getters['user/getUser']){
-    if(to.name != 'loginPage'){
-      badThing.myInfo.get().then((response) => {
-        store.commit('user/SET_USER', response.data)
-        next();
-      }).catch(() => {
-        return next({name : 'loginPage'})
-      })
-    }else{
-      badThing.myInfo.get().then((response) => {
-        store.commit('user/SET_USER', response.data)
-        next({ name: 'mainPage'});
-      }).catch(() => {
-        return next()
-      })
-    }
-  }
-  else{
+router.beforeEach(async (to, from, next) => { //kill it with fire!!!!!
+  await store.dispatch('user/checkAuth');
+  if(store.getters['user/getAuthState'] == true){
     if(to.name == 'loginPage'){
-      next({ name: 'mainPage'});
+      next({ name: 'mainPage' });
+    }else{
+      next();
     }
-    else{
-      next()
+    to;
+    from;
+  }else{
+    if(to.name != 'loginPage'){
+      next({ name: 'loginPage' });
+    }else{
+      next();
     }
   }
 });

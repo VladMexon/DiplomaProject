@@ -35,7 +35,7 @@ class authService{
 
     async  getRefreshToken(refreshToken){
         return db.one({
-            name: 'findEmployee',
+            name: 'getRefreshToken',
             text: 'SELECT id_employee FROM system.refresh_tokens WHERE refresh_token = $1',
             values: [refreshToken]
         });
