@@ -54,7 +54,7 @@
   .header {
     display : flex;
     align-items : center;
-    height: 65px;
+    height: 6.7%;
     background-color: #DEDEDE;
     border-bottom: solid;
     justify-content: space-between;

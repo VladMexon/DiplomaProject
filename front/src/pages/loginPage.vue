@@ -41,8 +41,10 @@ import { required, minLength } from '@vuelidate/validators'
         this.v$.form.$touch()
         if(!this.v$.form.$error){
           try{
-            await this.$store.dispatch('user/login', this.form);
-            this.$router.push({name: "mainPage"});
+            this.error = await this.$store.dispatch('user/login', this.form);
+            if(!this.error){
+              this.$router.push({name: "mainPage"});
+            }
           }catch(e){
             this.error = true;
           }

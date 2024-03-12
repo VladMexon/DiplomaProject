@@ -64,6 +64,30 @@ class authService{
             values: []
         });
     }
+
+    async getAllNotificationTypes(){
+        return db.many({
+            name: 'getAllNotificationTypes',
+            text: 'SELECT * FROM system.notification_types',
+            values: []
+        });
+    }
+
+    async getPositions(){
+        return db.many({
+            name: 'getPositions',
+            text: 'SELECT * FROM system.positions',
+            values: []
+        });
+    }
+
+    async getDepartmrnts(){
+        return db.many({
+            name: 'getDepartmrnts',
+            text: 'SELECT * FROM system.departments',
+            values: []
+        });
+    }
 }
 
 module.exports = new authService();

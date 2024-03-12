@@ -36,8 +36,10 @@ export default {
           localStorage.setItem('token', response.data.accessToken);
           commit('SET_USER', response.data.userData);
           commit('SET_AUTH_STATE', true);
+          return false;
         }catch(e){
           console.log(e);
+          return true;
         }
       },
       async logout({ commit }){

@@ -1,9 +1,9 @@
 import instance from './instance'
 import authModule from './auth'
-import myInfoModule from './myInfo'
+import notificationModule from './notification'
 
 export default {
   auth: authModule(instance),
-  myInfo: myInfoModule(instance)
+  notification: notificationModule(instance)
 }
 

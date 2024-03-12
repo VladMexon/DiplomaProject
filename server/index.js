@@ -2,7 +2,8 @@ require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser')
-const router = require('./router/index');
+const authRouter = require('./router/authRouter');
+const notificationRouter = require('./router/notificationRouter');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
 const PORT = process.env.PORT || 3000;
@@ -14,7 +15,8 @@ app.use(cors({
     credentials: true,
     origin: process.env.CLIENT_URL
 }));
-app.use('/auth', router);
+app.use('/auth', authRouter);
+app.use('/notification', notificationRouter);
 app.use(errorMiddleware);
 
 const start = async () => {
