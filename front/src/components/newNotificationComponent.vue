@@ -14,15 +14,15 @@
           <ul>
             <li v-for="(department, index) in departmentData" v-bind:key="index">
               {{ department.department.department_name }}
-              <input type="checkbox" id="{{ department.department.id_department }}" v-model="departmentsCheckboxes">
+              <input type="checkbox" v-bind:value="department.department.id_department" v-bind:id="'d' + department.department.id_department" v-model="departmentsCheckboxes">
               <ul>
                 <li v-for="(position, index) in department.positions" v-bind:key="index">
                   {{ position.position.position_name }}
-                  <input type="checkbox" id="{{ position.position.id_position }}" v-model="positionsCheckboxes">
+                  <input type="checkbox" v-bind:value=" department.department.id_department + '_' + position.position.id_position" v-bind:id="'d' + department.department.id_department +'p' + position.position.id_position" v-model="positionsCheckboxes">
                   <ul>
                     <li v-for="(recipient, index) in position.recipients" v-bind:key="index">
                       {{ recipient.second_name }} {{  recipient.first_name }} {{  recipient.middle_name  }}
-                      <input type="checkbox" id="{{ recipient.id_employee }}" v-model="recipientsCheckboxes">
+                      <input type="checkbox"  v-bind:value="department.department.id_department +'_' + position.position.id_position + '_' + recipient.id_employee" v-bind:id="'d' + department.department.id_department +'p' + position.position.id_position + 'r' + recipient.id_employee" v-model="recipientsCheckboxes">
                     </li>
                   </ul>
                 </li>
@@ -91,6 +91,13 @@
      watch: {
       recipientsCheckboxes(val){
         console.log(val);
+      },
+      positionsCheckboxes(val){
+        
+        
+      },
+      departmentsCheckboxes(val){
+        console.log(val);
       }
      },
   }
@@ -99,7 +106,8 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .new-notificiation{
-    background-color: aliceblue;
+    background-color: rgb(235, 235, 235);
+    border-radius: 10px;
     padding: 30px;
 }
 .center {
