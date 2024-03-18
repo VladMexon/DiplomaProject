@@ -11,6 +11,15 @@ export default function(instance) {
       },
       getPositions() {
         return instance.get('/notification/positions')
+      },
+      sendNotification(payload) {
+        return instance.post('/notification/send', payload)
+      },
+      getNotifications(payload) {
+        return instance.post('/notification/get', payload)
+      },
+      getNewNotifications(payload) {
+        return instance.post('/notification/getNew', payload)
       }
     }
   }

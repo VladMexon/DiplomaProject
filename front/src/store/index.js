@@ -4,7 +4,7 @@ import notificationTypes from './notificationTypes'
 import recipients from './recipients'
 import departments from './departments'
 import positions from './positions'
-
+import notifications from './notifications'
 
 export default createStore({
   modules: { 
@@ -12,7 +12,8 @@ export default createStore({
     notificationTypes,
     recipients,
     departments,
-    positions
+    positions,
+    notifications
   }
 })
 

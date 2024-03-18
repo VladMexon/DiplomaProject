@@ -1,28 +1,32 @@
 <template>
     <div class="new-notificiation center">
         <h3>Новое уведомление</h3>
-        <label for="asdasd">
+        <button class="closeButton" @click="closeModal"><img src="../assets/close.png" width="30" height="30" alt="submit"/></button>
+        <br/>
+        <label>
             Тип уведомления:
             <select name="notifTypes" v-model="selectedType">
-                <option value="apple" v-for="(type, index) in this.notificationTypes" v-bind:key="index">{{ type.type_name }}</option>
+                <option v-bind:value="type.id_type" v-for="(type, index) in this.notificationTypes" v-bind:key="index">{{ type.type_name }}</option>
             </select>
         </label>
+        <h4>Заголовок уведомления</h4>
+        <textarea v-model="notificationHeader" placeholder="Введите текст заголовка уведомления"></textarea>
         <h4>Текст уведомления</h4>
         <textarea v-model="notificationText" placeholder="Введите текст уведомления"></textarea>
         <h4>Получатель</h4>
         <div class="recipients">
           <ul>
-            <li v-for="(department, index) in departmentData" v-bind:key="index">
+            <li v-for="(department, indexD) in departmentData" v-bind:key="indexD">
               {{ department.department.department_name }}
-              <input type="checkbox" v-bind:value="department.department.id_department" v-bind:id="'d' + department.department.id_department" v-model="departmentsCheckboxes">
+              <input type="checkbox" v-bind:value="indexD" v-bind:id="'d' + indexD" v-model="departmentsCheckboxes">
               <ul>
-                <li v-for="(position, index) in department.positions" v-bind:key="index">
+                <li v-for="(position, indexP) in department.positions" v-bind:key="indexP">
                   {{ position.position.position_name }}
-                  <input type="checkbox" v-bind:value=" department.department.id_department + '_' + position.position.id_position" v-bind:id="'d' + department.department.id_department +'p' + position.position.id_position" v-model="positionsCheckboxes">
+                  <input type="checkbox" v-bind:value=" indexD + '_' + indexP" v-bind:id="'d' + indexD +'p' + indexP" v-model="positionsCheckboxes">
                   <ul>
-                    <li v-for="(recipient, index) in position.recipients" v-bind:key="index">
+                    <li v-for="(recipient, indexR) in position.recipients" v-bind:key="indexR">
                       {{ recipient.second_name }} {{  recipient.first_name }} {{  recipient.middle_name  }}
-                      <input type="checkbox"  v-bind:value="department.department.id_department +'_' + position.position.id_position + '_' + recipient.id_employee" v-bind:id="'d' + department.department.id_department +'p' + position.position.id_position + 'r' + recipient.id_employee" v-model="recipientsCheckboxes">
+                      <input type="checkbox"  v-bind:value="indexD +'_' + indexP + '_' + indexR" v-bind:id="'d' + indexD +'p' + indexP + 'r' + indexR" v-model="recipientsCheckboxes">
                     </li>
                   </ul>
                 </li>
@@ -30,6 +34,8 @@
             </li>
           </ul>
         </div>
+        <p v-if="error">Произошла ошибка при запросе</p>
+        <button class="sendNotification" @click="sendNotification">Отправить</button>
     </div>
 </template>
   
@@ -44,18 +50,45 @@
         recipients: null,
         selectedType: null,
         notificationText: null,
-        recipientsCheckboxes: [], //сделать разными id чекбоксов
+        notificationHeader: null,
+        recipientsCheckboxes: [], 
         departmentsCheckboxes: [],
-        positionsCheckboxes: []
+        positionsCheckboxes: [],
+        error: false
       }
     },
     methods: {
-      
+      closeModal(){
+        this.$emit('closeNotificationModal');
+      },
+      async sendNotification(){
+        let recipients = [];
+        this.recipientsCheckboxes.forEach(checkbox => {
+          let ids = checkbox.split("_"); //department_position_employee
+          recipients.push(this.departmentData[ids[0]].positions[ids[1]].recipients[ids[2]].id_employee);
+        });
+        try{
+          await this.$api.notification.sendNotification({
+          notificationHeader: this.notificationHeader,
+          notificationText: this.notificationText,
+          isDelayed: false, //for now
+          sendDate: null,
+          notificationType: this.selectedType,
+          isDrafted: false,
+          recipients
+        });
+        this.$emit('closeNotificationModal');
+        } catch(e){
+          console.log(e);
+          this.error = true;
+        }
+        
+        
+        
+        
+      }
     },
     async created() {
-      await this.$store.dispatch('positions/loadPositions');
-      await this.$store.dispatch('recipients/loadRecipients');
-      await this.$store.dispatch('departments/loadDepartments');
       this.notificationTypes = this.$store.getters['notificationTypes/getnotificationTypes'];
       this.departments = this.$store.getters['departments/getDepartments'];
       this.positions = this.$store.getters['positions/getPositions'];
@@ -93,11 +126,38 @@
         console.log(val);
       },
       positionsCheckboxes(val){
-        
-        
+        console.log(val);
+        //this.recipientsCheckboxes = [];
+        val.forEach((value) => {
+          let data = value.split("_");
+          let len = this.departmentData[parseInt(data[0])].positions[parseInt(data[1])].recipients.length;
+          for(let i = 0; i < len; i++){
+            let newCheckBox = `${data[0]}_${data[1]}_${i}`
+            if(!this.recipientsCheckboxes.includes(newCheckBox)){
+              this.recipientsCheckboxes.push(newCheckBox);
+            }
+          }
+        })
       },
       departmentsCheckboxes(val){
-        console.log(val);
+          console.log(val);
+          val.forEach((value) => {
+          let data = value;
+          let lenP = this.departmentData[parseInt(data)].positions.length;
+          for(let i = 0; i < lenP; i++){
+            let newCheckBox = `${data}_${i}`
+            if(!this.positionsCheckboxes.includes(newCheckBox)){
+              this.positionsCheckboxes.push(newCheckBox);
+            }
+            let lenR = this.departmentData[parseInt(data)].positions[parseInt(i)].recipients.length;
+            for(let j = 0; j < lenR; j++){
+              let newCheckBox = `${data}_${i}_${j}`
+              if(!this.recipientsCheckboxes.includes(newCheckBox)){
+                this.recipientsCheckboxes.push(newCheckBox);
+            }
+          }
+          }
+        })
       }
      },
   }
@@ -115,6 +175,17 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+ul {
+    list-style-type: none;
+    }
+h3{
+  display: inline-block;
+}
+.closeButton{
+  float: right;
+  border: 0;
+  background:none;
 }
 </style>
   

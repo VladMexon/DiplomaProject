@@ -1,7 +1,7 @@
 <template>
   <headerComponent/>
   <leftMenuComponent @changeType="changeType" @newNotificationModal="openNewNotificationModal()"/>
-  <newNotificationComponent v-if="newNotificationModalOpended"/>
+  <newNotificationComponent v-if="newNotificationModalOpended" @closeNotificationModal="openNewNotificationModal()"/>
 </template>
   
 <script>

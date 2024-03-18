@@ -25,6 +25,31 @@ class authService{
         });
     }
 
+    async newNotification(notificationHeader, notificationText, employeeId, isDelayed, sendDate, notificationType, isDrafted){
+        return db.one({
+            name: 'newNotification',
+            text: 'INSERT INTO system.notifications(notification_text, id_author, delayed, send_date, id_notification_type, drafted, notification_header) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id_notification',
+            values: [notificationText, employeeId, isDelayed, sendDate, notificationType, isDrafted, notificationHeader]
+        });
+    }
+
+    async newRecipient(idNotification, idRecipient){
+        return db.none({
+            name: 'newRecipient',
+            text: 'INSERT INTO system.notification_recipients(id_notification, id_employee) VALUES($1, $2)',
+            values: [idNotification, idRecipient]
+        });
+    }
+
+
+    async newSendedNotification(idNotification, idSender, idRecipient){
+        return db.none({
+            name: 'newSendedNotification',
+            text: 'INSERT INTO system.sended_notifications(id_notification, id_sender, id_recipient) VALUES($1, $2, $3)',
+            values: [idNotification, idSender, idRecipient]
+        });
+    }
+
     async deleteRefreshToken(refreshToken){
         return db.none({
             name: 'deleteRefreshToken',
@@ -34,13 +59,45 @@ class authService{
     }
 
     async  getRefreshToken(refreshToken){
-        return db.one({
+        return db.oneOrNone({
             name: 'getRefreshToken',
             text: 'SELECT id_employee FROM system.refresh_tokens WHERE refresh_token = $1',
             values: [refreshToken]
         });
     }
-    
+
+    async  getNotifications(recipientId, lastId){
+        return db.manyOrNone({
+            name: 'getNotifications',
+            text: 'SELECT n.id_notification, n.id_notification_type, n.notification_text, n.notification_header, sn.id_sended, sn.id_sender, sn.is_reacted, sn.time FROM system.notifications AS n JOIN system.sended_notifications AS sn ON n.id_notification = sn.id_notification WHERE sn.id_recipient = $1 AND sn.id_sended < $2 ORDER BY n.id_notification DESC LIMIT 10;',
+            values: [recipientId, lastId]
+        });
+    }
+
+    async  getNewNotifications(recipientId, lastId){
+        return db.manyOrNone({
+            name: 'getNewNotifications',
+            text: 'SELECT n.id_notification, n.id_notification_type, n.notification_text, n.notification_header, sn.id_sended, sn.id_sender, sn.is_reacted, sn.time FROM system.notifications AS n JOIN system.sended_notifications AS sn ON n.id_notification = sn.id_notification WHERE sn.id_recipient = $1 AND sn.id_sended > $2 ORDER BY n.id_notification DESC LIMIT 10;',
+            values: [recipientId, lastId]
+        });
+    }
+
+    async  getNotificationsByType(recipientId, lastId, typeId){
+        return db.manyOrNone({
+            name: 'getNotificationsByType',
+            text: 'SELECT n.id_notification, n.id_notification_type, n.notification_text, n.notification_header, sn.id_sended, sn.id_sender, sn.is_reacted, sn.time FROM system.notifications AS n JOIN system.sended_notifications AS sn ON n.id_notification = sn.id_notification WHERE sn.id_recipient = $1 AND sn.id_sended < $2 AND n.id_notification_type = $3 ORDER BY n.id_notification DESC LIMIT 10;',
+            values: [recipientId, lastId, typeId]
+        });
+    }
+
+    async  getLastNotifications(recipientId){
+        return db.manyOrNone({
+            name: 'getLastNotifications',
+            text: 'SELECT n.id_notification, n.id_notification_type, n.notification_text, n.notification_header, sn.id_sended, sn.id_sender, sn.is_reacted, sn.time FROM system.notifications AS n JOIN system.sended_notifications AS sn ON n.id_notification = sn.id_notification WHERE sn.id_recipient = $1 ORDER BY n.id_notification DESC LIMIT 10;',
+            values: [recipientId]
+        });
+    }
+
     async getCredentials(user_name){
         return db.one({
             name: 'getCredInfo',
