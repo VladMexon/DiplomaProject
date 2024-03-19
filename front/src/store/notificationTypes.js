@@ -7,6 +7,14 @@ export default {
     getters: {
       getnotificationTypes(state) {
         return state.notificationTypes
+      },
+      getNotificationNameById: (state) => (id) => {
+        if(id != 0){
+          return state.notificationTypes.find(type => type.id_type == id).type_name;
+        }else{
+          return 'Все';
+        }
+        
       }
     },
     mutations: {

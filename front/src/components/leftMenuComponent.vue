@@ -43,17 +43,12 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     .left-menu{
-      width: 350px;
-      height: 93%;
-      display: inline-block;
       border-right: solid;
     }
     .menu{
-      margin-left: auto;
-      margin-right: auto;
+      margin: 10px;
       padding-top: 10px;
       padding-bottom: 10px;
-      margin-top: 10px;
       width: 300px;
       background-color: #c7c7c7;
       border-radius: 10px;
