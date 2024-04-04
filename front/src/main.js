@@ -18,9 +18,8 @@ router.beforeEach(async (to, from, next) => { //kill it with fire!!!!!
   if(store.getters['user/getAuthState'] == true){
     if(to.name == 'mainPage'){
       await store.dispatch('positions/loadPositions');
-      await store.dispatch('recipients/loadRecipients');
+      await store.dispatch('employees/loadEmployees');
       await store.dispatch('departments/loadDepartments');
-      await store.dispatch('notifications/initNotifications');
     }
     if(to.name == 'loginPage'){
       next({ name: 'mainPage' });

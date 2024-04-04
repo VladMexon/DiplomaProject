@@ -2,7 +2,7 @@
   <headerComponent/>
   <div class="container">
     <leftMenuComponent @changeType="changeType" @newNotificationModal="openNewNotificationModal()"/>
-    <notificationListComponent :typeId="currnentType"/>
+    <notificationListComponent :typeId="currnentType" v-bind:key="currnentType"/>
   </div>
   <newNotificationComponent v-if="newNotificationModalOpended" @closeNotificationModal="openNewNotificationModal()"/>
 </template>

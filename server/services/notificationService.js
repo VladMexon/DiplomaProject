@@ -23,20 +23,19 @@ class notificatonService{
     async sendNotification(idNotification, idSender, idRecipient){
         return await dbService.newSendedNotification(idNotification, idSender, idRecipient);
     }
-    async getNotifications(idRecipient, idLast, idType){
-        if(idLast!=0){
-            if(idType==0){
-                return await dbService.getNotifications(idRecipient, idLast);
-            }else{
-                return await dbService.getNotificationsByType(idRecipient, idLast, idType);
-            }
+    async getPrevNotifications(idRecipient, idLast, idType){
+        if(idType==0){
+            return await dbService.getPrevNotificationsNoId(idRecipient, idLast);
         }else{
-            return await dbService.getLastNotifications(idRecipient);
+            return await dbService.getPrevNotifications(idRecipient, idLast, idType);
         }
-        
     }
-    async getNewNotifications(idRecipient, idLast){
-        return await dbService.getNewNotifications(idRecipient, idLast);
+    async getNewNotifications(idRecipient, idLast, idType){
+        if(idType==0){
+            return await dbService.getNewNotificationsNoId(idRecipient, idLast);
+        }else{
+            return await dbService.getNewNotifications(idRecipient, idLast, idType);
+        }
     }
 }
 

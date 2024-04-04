@@ -66,35 +66,35 @@ class authService{
         });
     }
 
-    async  getNotifications(recipientId, lastId){
+    async  getPrevNotifications(recipientId, lastId, typeId){
         return db.manyOrNone({
-            name: 'getNotifications',
-            text: 'SELECT n.id_notification, n.id_notification_type, n.notification_text, n.notification_header, sn.id_sended, sn.id_sender, sn.is_reacted, sn.time FROM system.notifications AS n JOIN system.sended_notifications AS sn ON n.id_notification = sn.id_notification WHERE sn.id_recipient = $1 AND sn.id_sended < $2 ORDER BY n.id_notification DESC LIMIT 10;',
-            values: [recipientId, lastId]
-        });
-    }
-
-    async  getNewNotifications(recipientId, lastId){
-        return db.manyOrNone({
-            name: 'getNewNotifications',
-            text: 'SELECT n.id_notification, n.id_notification_type, n.notification_text, n.notification_header, sn.id_sended, sn.id_sender, sn.is_reacted, sn.time FROM system.notifications AS n JOIN system.sended_notifications AS sn ON n.id_notification = sn.id_notification WHERE sn.id_recipient = $1 AND sn.id_sended > $2 ORDER BY n.id_notification DESC LIMIT 10;',
-            values: [recipientId, lastId]
-        });
-    }
-
-    async  getNotificationsByType(recipientId, lastId, typeId){
-        return db.manyOrNone({
-            name: 'getNotificationsByType',
+            name: 'getPrevNotifications',
             text: 'SELECT n.id_notification, n.id_notification_type, n.notification_text, n.notification_header, sn.id_sended, sn.id_sender, sn.is_reacted, sn.time FROM system.notifications AS n JOIN system.sended_notifications AS sn ON n.id_notification = sn.id_notification WHERE sn.id_recipient = $1 AND sn.id_sended < $2 AND n.id_notification_type = $3 ORDER BY n.id_notification DESC LIMIT 10;',
             values: [recipientId, lastId, typeId]
         });
     }
 
-    async  getLastNotifications(recipientId){
+    async  getNewNotificationsNoId(recipientId, lastId){
         return db.manyOrNone({
-            name: 'getLastNotifications',
-            text: 'SELECT n.id_notification, n.id_notification_type, n.notification_text, n.notification_header, sn.id_sended, sn.id_sender, sn.is_reacted, sn.time FROM system.notifications AS n JOIN system.sended_notifications AS sn ON n.id_notification = sn.id_notification WHERE sn.id_recipient = $1 ORDER BY n.id_notification DESC LIMIT 10;',
-            values: [recipientId]
+            name: 'getNewNotificationsNoId',
+            text: 'SELECT n.id_notification, n.id_notification_type, n.notification_text, n.notification_header, sn.id_sended, sn.id_sender, sn.is_reacted, sn.time FROM system.notifications AS n JOIN system.sended_notifications AS sn ON n.id_notification = sn.id_notification WHERE sn.id_recipient = $1 AND sn.id_sended > $2 ORDER BY n.id_notification DESC LIMIT 10;',
+            values: [recipientId, lastId]
+        });
+    }
+
+    async  getPrevNotificationsNoId(recipientId, lastId){
+        return db.manyOrNone({
+            name: 'getPrevNotificationsNoId',
+            text: 'SELECT n.id_notification, n.id_notification_type, n.notification_text, n.notification_header, sn.id_sended, sn.id_sender, sn.is_reacted, sn.time FROM system.notifications AS n JOIN system.sended_notifications AS sn ON n.id_notification = sn.id_notification WHERE sn.id_recipient = $1 AND sn.id_sended < $2 ORDER BY n.id_notification DESC LIMIT 10;',
+            values: [recipientId, lastId]
+        });
+    }
+
+    async  getNewNotifications(recipientId, lastId, typeId){
+        return db.manyOrNone({
+            name: 'getNewNotifications',
+            text: 'SELECT n.id_notification, n.id_notification_type, n.notification_text, n.notification_header, sn.id_sended, sn.id_sender, sn.is_reacted, sn.time FROM system.notifications AS n JOIN system.sended_notifications AS sn ON n.id_notification = sn.id_notification WHERE sn.id_recipient = $1 AND sn.id_sended > $2 AND n.id_notification_type = $3 ORDER BY n.id_notification DESC LIMIT 10;',
+            values: [recipientId, lastId, typeId]
         });
     }
 

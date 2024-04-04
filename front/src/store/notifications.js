@@ -19,7 +19,6 @@ export default {
       },
       getNotificationsByTypeId:(state) => (id)=>{
         if(id != 0){
-          console.log('yes')
           return state.notifications.filter(notification => notification.id_notification_type == id).sort((a, b) =>{
             if(a.id_sended < b.id_sended){
               return -1;
@@ -44,7 +43,7 @@ export default {
       }
     },
     mutations: {
-      SET_NOTIFICATIONS(state, payload) {
+      ADD_NOTIFICATIONS(state, payload) {
         state.notifications.push(...payload.notifications.sort((a, b) =>{
           if(a.id_sended < b.id_sended){
             return 1;
@@ -58,6 +57,10 @@ export default {
           state.buttons.push(...payload.buttons)
         }
       },
+      SET_NOTIFICATIONS(state, payload){
+        state.notifications = payload.notifications;
+        state.buttons = payload.buttons
+      },
       SET_FIRSTID(state, payload){
         state.firstId = payload
       },
@@ -69,12 +72,13 @@ export default {
         state.buttons = [];
         state.firstId = 0;
         state.lastId = 0;
+        console.log('clclcl');
       }
     },
     actions: {
-      async initNotifications({ commit }){
+      async initNotifications({ commit }, id_notification_type){
         try{
-          const response = await api.notification.getNotifications({lastId: 0, id_notification_type: 0});
+          const response = await api.notification.getNewNotifications({lastId: 0, id_notification_type});
           console.log(response);
           commit('SET_NOTIFICATIONS', response.data);
           commit('SET_LASTID', response.data.notifications[0].id_sended);
@@ -88,7 +92,7 @@ export default {
           const response = await api.notification.getNotifications({lastId: getters.getFirstId, id_notification_type});
           console.log(response);
           if(response.data.notifications.length > 0){
-            commit('SET_NOTIFICATIONS', response.data);
+            commit('ADD_NOTIFICATIONS', response.data);
             commit('SET_FIRSTID', response.data.notifications[response.data.notifications.length - 1].id_sended);
             return true;
           }
@@ -96,13 +100,14 @@ export default {
         }catch(e){
           console.log(e);
         }
+        
       },
-      async getNewNotifications({ commit, getters }){
+      async loadNewNotifications({ commit, getters }, id_notification_type){
         try{
-          const response = await api.notification.getNewNotifications({lastId: getters.getLastId});
+          const response = await api.notification.getNewNotifications({lastId: getters.getLastId, id_notification_type});
           console.log(response);
           if(response.data.notifications.length > 0){
-            commit('SET_NOTIFICATIONS', response.data);
+            commit('ADD_NOTIFICATIONS', response.data);
             commit('SET_LASTID', response.data.notifications[0].id_sended);
             return true;
           }
@@ -111,7 +116,7 @@ export default {
           console.log(e);
         }
       },
-      clear({commit}){
+      async clear({commit}){
         commit('CLEAR_NOTIFICATIONS');
       }
     },

@@ -2,7 +2,13 @@
     <div class="listContainer">
       <h3 > {{ type }} </h3>
       <div class="notificationList" :key="typeId" ref="notifList" @scroll="listScroll">
-        <notificationComponent class="notification" v-for="(notification, index) in notifications" v-bind:key="index" :header="notification.notification_header" :text="notification.notification_text"/>
+        <notificationComponent class="notification" v-for="(notification, index) in notifications" v-bind:key="index" 
+        :header="notification.notification_header" 
+        :text="notification.notification_text"
+        :typeName="$store.getters['notificationTypes/getTypeNameById'](notification.id_notification_type)"
+        :senderName="$store.getters['employees/getEmployeeNameById'](notification.id_sender)"
+        :sendTime="notification.time"/>
+        
       </div>
     </div>
 </template>
@@ -22,38 +28,47 @@ import notificationComponent from './notificationComponent.vue';
       }
     },
     props: ['typeId'],
-    async created() {
+    async created() { //грузить между id и решить проблему со скроллами
+      console.log('created');
+      await this.$store.dispatch('notifications/clear');
+      await this.$store.dispatch('notifications/initNotifications', this.typeId);
       this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
-      this.type = this.$store.getters['notificationTypes/getNotificationNameById'](this.typeId);
+      this.type = this.$store.getters['notificationTypes/getTypeNameById'](this.typeId);
       this.timer = setInterval(async () => {
-        if(await this.$store.dispatch('notifications/getNewNotifications')){
+        if(await this.$store.dispatch('notifications/loadNewNotifications', this.typeId)){
           this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
         }
-      }, 5000)
+      }, 5000);
+      //this.$refs.notifList.scrollTop = this.$refs.notifList.scrollHeight;
+      this.$nextTick(() => {
+        const list = this.$refs.notifList;
+        if (list) {
+          list.scrollTop = list.scrollHeight;
+        }
+      });
     },
-    mounted(){
-      this.$refs.notifList.scrollTop = this.$refs.notifList.scrollHeight;
-    },
-    watch:{
-      typeId(){
-        this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
-        this.type = this.$store.getters['notificationTypes/getNotificationNameById'](this.typeId);
-        this.$refs.notifList.scrollTop = this.$refs.notifList.scrollHeight;
-      }
+    mounted() {
+      
     },
     beforeUnmount() {
      clearInterval(this.timer)
     },
     methods:{
-      async listScroll(){
-        let scroll = this.$refs.notifList;
-        if(scroll.scrollTop <= 0){
-          console.log('Up')
-          if(await this.$store.dispatch('notifications/loadPrevNotifications', this.typeId)){
-            this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
-          }
+      async listScroll() {
+      const list = this.$refs.notifList;
+      if (list.scrollTop <= 0) {
+        console.log('Up');
+        const scrollHeightBefore = list.scrollHeight; // Запоминаем текущую высоту скролла
+        if (await this.$store.dispatch('notifications/loadPrevNotifications', this.typeId)) {
+          this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
+          this.$nextTick(() => {
+            const scrollHeightAfter = list.scrollHeight; // Получаем новую высоту скролла после подгрузки
+            const scrollDifference = scrollHeightAfter - scrollHeightBefore; // Вычисляем разницу
+            list.scrollTop = scrollDifference; // Устанавливаем скролл так, чтобы пользователь остался на том же месте
+          });
         }
       }
+}
     }
   }
 </script>

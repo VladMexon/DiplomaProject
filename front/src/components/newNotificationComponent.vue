@@ -6,7 +6,7 @@
         <label>
             Тип уведомления:
             <select name="notifTypes" v-model="selectedType">
-                <option v-bind:value="type.id_type" v-for="(type, index) in this.notificationTypes" v-bind:key="index">{{ type.type_name }}</option>
+                <option v-bind:value="type.id_type" v-for="(type, index) in $store.getters['notificationTypes/getnotificationTypes']" v-bind:key="index">{{ type.type_name }}</option>
             </select>
         </label>
         <h4>Заголовок уведомления</h4>
@@ -44,10 +44,6 @@
     name: 'leftMenuComponent',
     data() {
       return {
-        notificationTypes: null,
-        departments: null,
-        positions: null,
-        recipients: null,
         selectedType: null,
         notificationText: null,
         notificationHeader: null,
@@ -89,28 +85,28 @@
       }
     },
     async created() {
-      this.notificationTypes = this.$store.getters['notificationTypes/getnotificationTypes'];
-      this.departments = this.$store.getters['departments/getDepartments'];
-      this.positions = this.$store.getters['positions/getPositions'];
-      this.recipients = this.$store.getters['recipients/getRecipients'];
+
      },
      computed: {
       departmentData(){ //kill it with fire!!!
         let data = [];
         let watchedPositions = []
-        if(this.departments && this.positions && this.recipients){
-          this.departments.forEach(department => {
+        let departments = this.$store.getters['departments/getDepartments'];
+        let positions = this.$store.getters['positions/getPositions'];
+        let recipients = this.$store.getters['employees/getEmployees'];
+        if(departments && positions && recipients){
+          departments.forEach(department => {
           let departmentData = {
             department: department,
             positions: []
           };
-          this.recipients.filter(recipient => recipient.id_department == department.id_department).forEach(recipient => {
-            let position = this.positions.find(position => position.id_position == recipient.id_position);
+          recipients.filter(recipient => recipient.id_department == department.id_department).forEach(recipient => {
+            let position = positions.find(position => position.id_position == recipient.id_position);
             if(!watchedPositions.includes(position)){
               watchedPositions.push(position);
             let positionData = {
               position: position,
-              recipients: this.recipients.filter(recipient => recipient.id_position == position.id_position)
+              recipients: recipients.filter(recipient => recipient.id_position == position.id_position)
             };
             departmentData.positions.push(positionData);
             }

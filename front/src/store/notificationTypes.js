@@ -2,15 +2,20 @@ import api from '../api/index.js'
 export default {
     namespaced: true,
     state: {
-      notificationTypes: null
+      notificationTypes: []
     },
     getters: {
       getnotificationTypes(state) {
         return state.notificationTypes
       },
-      getNotificationNameById: (state) => (id) => {
+      getTypeNameById: (state) => (id) => {
         if(id != 0){
-          return state.notificationTypes.find(type => type.id_type == id).type_name;
+          if(state.notificationTypes.length != 0){
+            console.log(id);
+            return state.notificationTypes.find(type => type.id_type == id).type_name;
+          }else{
+            return [];
+          }
         }else{
           return 'Все';
         }
@@ -19,7 +24,7 @@ export default {
     },
     mutations: {
       SET_NOTIFICATION_TYPES(state, payload) {
-        state.notificationTypes = payload
+        state.notificationTypes = payload;
       }
     },
     actions: {
