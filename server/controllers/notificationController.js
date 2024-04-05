@@ -72,6 +72,15 @@ class dataController {
             next(e);
         }
     }
+    async getLastId(req, res, next){
+        try{
+            const idEmployee = req.user.id_employee;
+            const responce = await notificationService.getLastId(idEmployee);
+            res.json(responce.id_sended);
+        }catch(e){
+            next(e);
+        }
+    }
 }
 
 module.exports = new dataController();

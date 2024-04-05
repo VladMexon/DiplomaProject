@@ -28,7 +28,7 @@ export default {
     },
     methods:{
       changeType(index){
-        console.log(index);
+        //console.log(index);
         this.currnentType = index;
       },
       openNewNotificationModal(){

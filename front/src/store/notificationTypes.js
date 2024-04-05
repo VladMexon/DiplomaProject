@@ -11,7 +11,7 @@ export default {
       getTypeNameById: (state) => (id) => {
         if(id != 0){
           if(state.notificationTypes.length != 0){
-            console.log(id);
+            //console.log(id);
             return state.notificationTypes.find(type => type.id_type == id).type_name;
           }else{
             return [];

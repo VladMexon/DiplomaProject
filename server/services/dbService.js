@@ -145,6 +145,14 @@ class authService{
             values: []
         });
     }
+
+    async getLastId(recipientId){
+        return db.oneOrNone({
+            name: 'getLastId',
+            text: 'SELECT id_sended FROM system.sended_notifications WHERE id_recipient = $1 ORDER BY id_sended DESC LIMIT 1;',
+            values: [recipientId]
+        });
+    }
 }
 
 module.exports = new authService();

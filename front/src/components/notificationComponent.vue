@@ -34,6 +34,13 @@
 }
 h3{
   text-align: center;
+  margin-top: 0px;
+}
+p{
+  background-color: #b6b6b6;
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 0px;
 }
 </style>
   

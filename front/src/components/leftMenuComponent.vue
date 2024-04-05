@@ -47,23 +47,35 @@
     }
     .menu{
       margin: 10px;
-      padding-top: 10px;
-      padding-bottom: 10px;
+      padding-top: 5px;
+      padding-bottom: 5px;
       width: 300px;
       background-color: #c7c7c7;
       border-radius: 10px;
     }
     ul {
-    list-style-type: none;
+      list-style-type: none;
+      padding: 0px;
+      margin: 5px;
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
     }
     button {
       margin: 5px;
       height: 50px;
-      width: 200px;
+      width: 260px;
       background-color: rgb(219, 219, 219);
       color: black;
       border: 2px solid #a0a0a0;
       border-radius: 10px;
+    }
+    button:hover {
+      background-color: rgb(207, 207, 207);
+    }
+    button:active {
+      background-color: rgb(189, 189, 189);
     }
 </style>
   

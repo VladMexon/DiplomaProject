@@ -39,7 +39,6 @@
     methods: {
         async logout(){
           await this.$store.dispatch('user/logout');
-          //this.$store.dispatch('notifications/clear');
           this.$router.push({name: "loginPage"});
         },
         openModal(){
@@ -89,6 +88,7 @@
     border-top: none;
     border-right: none;
     padding: 10px;
+    background-color: #DEDEDE;
   }
   .content {
     display: flex;

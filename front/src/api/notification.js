@@ -12,6 +12,9 @@ export default function(instance) {
       getPositions() {
         return instance.get('/notification/positions')
       },
+      getLastId() {
+        return instance.get('/notification/lastId')
+      },
       sendNotification(payload) {
         return instance.post('/notification/send', payload)
       },

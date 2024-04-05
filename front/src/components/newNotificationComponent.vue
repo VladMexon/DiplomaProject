@@ -15,17 +15,17 @@
         <textarea v-model="notificationText" placeholder="Введите текст уведомления"></textarea>
         <h4>Получатель</h4>
         <div class="recipients">
-          <ul>
+          <ul class="list">
             <li v-for="(department, indexD) in departmentData" v-bind:key="indexD">
-              {{ department.department.department_name }}
+              Отдел: {{ department.department.department_name }}
               <input type="checkbox" v-bind:value="indexD" v-bind:id="'d' + indexD" v-model="departmentsCheckboxes">
               <ul>
                 <li v-for="(position, indexP) in department.positions" v-bind:key="indexP">
-                  {{ position.position.position_name }}
+                  Должность: {{ position.position.position_name }}
                   <input type="checkbox" v-bind:value=" indexD + '_' + indexP" v-bind:id="'d' + indexD +'p' + indexP" v-model="positionsCheckboxes">
                   <ul>
                     <li v-for="(recipient, indexR) in position.recipients" v-bind:key="indexR">
-                      {{ recipient.second_name }} {{  recipient.first_name }} {{  recipient.middle_name  }}
+                      Сотрудник: {{ recipient.second_name }} {{  recipient.first_name }} {{  recipient.middle_name  }}
                       <input type="checkbox"  v-bind:value="indexD +'_' + indexP + '_' + indexR" v-bind:id="'d' + indexD +'p' + indexP + 'r' + indexR" v-model="recipientsCheckboxes">
                     </li>
                   </ul>
@@ -165,6 +165,7 @@
     background-color: rgb(235, 235, 235);
     border-radius: 10px;
     padding: 30px;
+    width: 500px;
 }
 .center {
   position: absolute;
@@ -172,16 +173,41 @@
   top: 50%;
   transform: translate(-50%, -50%);
 }
-ul {
-    list-style-type: none;
-    }
+ul{
+  list-style-type: none;
+}
 h3{
   display: inline-block;
+  margin-top: 0px;
+}
+h4{
+  margin: 5px;
 }
 .closeButton{
   float: right;
   border: 0;
   background:none;
+}
+.closeButton:hover{
+  background-color: #cacaca;
+}
+.closeButton:active{
+  background-color: #bebebe;
+}
+.recipients{
+  background-color: #dddddd;
+  padding: 10px;
+  overflow: auto;
+  height: 150px;
+}
+.recipients .list{
+  padding: 0px;
+}
+textarea{
+  width: 100%;
+  height: 70px;
+  resize: none;
+  overflow: auto;
 }
 </style>
   

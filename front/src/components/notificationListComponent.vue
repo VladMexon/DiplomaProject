@@ -1,6 +1,6 @@
 <template>
     <div class="listContainer">
-      <h3 > {{ type }} </h3>
+      <div class="type"><h3 > {{ type }} </h3></div>
       <div class="notificationList" :key="typeId" ref="notifList" @scroll="listScroll">
         <notificationComponent class="notification" v-for="(notification, index) in notifications" v-bind:key="index" 
         :header="notification.notification_header" 
@@ -29,17 +29,15 @@ import notificationComponent from './notificationComponent.vue';
     },
     props: ['typeId'],
     async created() { //грузить между id и решить проблему со скроллами
-      console.log('created');
       await this.$store.dispatch('notifications/clear');
       await this.$store.dispatch('notifications/initNotifications', this.typeId);
       this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
       this.type = this.$store.getters['notificationTypes/getTypeNameById'](this.typeId);
       this.timer = setInterval(async () => {
-        if(await this.$store.dispatch('notifications/loadNewNotifications', this.typeId)){
+        if(await this.$store.dispatch('notifications/loadNewNotificationsNoId', this.typeId)){
           this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
         }
       }, 5000);
-      //this.$refs.notifList.scrollTop = this.$refs.notifList.scrollHeight;
       this.$nextTick(() => {
         const list = this.$refs.notifList;
         if (list) {
@@ -75,11 +73,15 @@ import notificationComponent from './notificationComponent.vue';
   
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.type{
+  border-bottom: solid;
+}
 h3{
   margin: 10px;
   background-color: #c7c7c7;
   border-radius: 10px;
   padding: 10px;
+  text-align: center;
 }
 .notificationList{
   display: inline-block;
