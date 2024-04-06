@@ -11,17 +11,14 @@
         :sendTime="notification.time" />
     </div>
   </div>
-  <newNotificationsListComponent ref="newNotificationsListComponent"/>
 </template>
 
 <script>
 import notificationComponent from './notificationComponent.vue';
-import newNotificationsListComponent from './newNotificationsListComponent.vue';
 export default {
   name: 'notificationList',
   components: {
-    notificationComponent,
-    newNotificationsListComponent
+    notificationComponent
   },
   data() {
     return {
@@ -35,26 +32,23 @@ export default {
     await this.$store.dispatch('notifications/initNotifications', this.typeId);
     this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
     this.type = this.$store.getters['notificationTypes/getTypeNameById'](this.typeId);
-    this.timer = setInterval(async () => {
-      if (await this.$store.dispatch('notifications/loadNewNotificationsNoId', this.typeId)) {
-        this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
-        this.$refs.newNotificationsListComponent.update();
-      }
-    }, 5000);
+    this.$store.commit('notifications/ADD_UPDATE_FUNCTION', this.update);
     this.$nextTick(() => {
-      const list = this.$refs.notifList;
-      if (list) {
-        list.scrollTop = list.scrollHeight;
+      if (this.notifications.length > 0) {
+        const list = this.$refs.notifList;
+        if (list) {
+          list.scrollTop = list.scrollHeight;
+        }
       }
     });
   },
-  mounted() {
-
-  },
   beforeUnmount() {
-    clearInterval(this.timer)
+    this.$store.commit('notifications/REMOVE_UPDATE_FUNCTION', this.update);
   },
   methods: {
+    update(){
+      this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
+    },
     async listScroll() {
       const list = this.$refs.notifList;
       if (list.scrollTop <= 0) {

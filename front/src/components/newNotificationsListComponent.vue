@@ -21,6 +21,9 @@ export default {
             notifications: []
         }
     },
+    created(){
+        this.$store.commit('notifications/ADD_UPDATE_FUNCTION', this.update);
+    },
     methods: {
         update() {
             this.notifications.push(...this.$store.getters['notifications/getNewNotifications']);
@@ -28,6 +31,9 @@ export default {
         closeModal(id_sended){
             this.notifications = this.notifications.filter((item) => item.id_sended != id_sended);
         }
+    },
+    beforeUnmount(){
+        this.$store.commit('notifications/REMOVE_UPDATE_FUNCTION', this.update);
     }
 }
 </script>

@@ -6,7 +6,8 @@ export default {
       newNotifications: [],
       buttons: [],
       firstId: 0,
-      lastId: 0
+      lastId: 0,
+      updateFunctions: []
     },
     getters: {
       getButtons(state) {
@@ -46,6 +47,9 @@ export default {
         let newNotifications = state.newNotifications;
         state.newNotifications = [];
         return newNotifications;
+      },
+      getUpdateFunctions(state){
+        return state.updateFunctions;
       }
     },
     mutations: {
@@ -99,6 +103,12 @@ export default {
         state.buttons = [];
         state.firstId = 0;
         state.lastId = 0;
+      },
+      ADD_UPDATE_FUNCTION(state, func){
+        state.updateFunctions.push(func);
+      },
+      REMOVE_UPDATE_FUNCTION(state, func){
+        state.updateFunctions = state.updateFunctions.filter((item) => item !== func);
       }
     },
     actions: {
@@ -156,9 +166,11 @@ export default {
             }else{
               commit('ADD_NOTIFICATIONS', {buttons: response.data.buttons, notifications: response.data.notifications});
             }
-            
             commit('ADD_NEW_NOTIFICATIONS', response.data);
             commit('SET_LASTID', response.data.notifications[0].id_sended);
+            getters.getUpdateFunctions.forEach(func => {
+              func();
+            });
             return true;
           }
           return false;
