@@ -1,58 +1,61 @@
 <template>
-    <div class="listContainer">
-      <div class="type"><h3 > {{ type }} </h3></div>
-      <div class="notificationList" :key="typeId" ref="notifList" @scroll="listScroll">
-        <notificationComponent class="notification" v-for="(notification, index) in notifications" v-bind:key="index" 
-        :header="notification.notification_header" 
-        :text="notification.notification_text"
+  <div class="listContainer">
+    <div class="type">
+      <h3> {{ type }} </h3>
+    </div>
+    <div class="notificationList" :key="typeId" ref="notifList" @scroll="listScroll">
+      <notificationComponent v-for="(notification, index) in notifications" v-bind:key="index"
+        :header="notification.notification_header" :text="notification.notification_text"
         :typeName="$store.getters['notificationTypes/getTypeNameById'](notification.id_notification_type)"
         :senderName="$store.getters['employees/getEmployeeNameById'](notification.id_sender)"
-        :sendTime="notification.time"/>
-        
-      </div>
+        :sendTime="notification.time" />
     </div>
+  </div>
+  <newNotificationsListComponent ref="newNotificationsListComponent"/>
 </template>
-  
+
 <script>
 import notificationComponent from './notificationComponent.vue';
-  export default {
-    name: 'notificationList',
-    components:{
-      notificationComponent,
-    },
-    data() {
-      return {
-        notifications: null,
-        type: null,
-        timer: null
+import newNotificationsListComponent from './newNotificationsListComponent.vue';
+export default {
+  name: 'notificationList',
+  components: {
+    notificationComponent,
+    newNotificationsListComponent
+  },
+  data() {
+    return {
+      notifications: null,
+      type: null,
+      timer: null
+    }
+  },
+  props: ['typeId'],
+  async created() { //грузить между id и решить проблему со скроллами
+    await this.$store.dispatch('notifications/initNotifications', this.typeId);
+    this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
+    this.type = this.$store.getters['notificationTypes/getTypeNameById'](this.typeId);
+    this.timer = setInterval(async () => {
+      if (await this.$store.dispatch('notifications/loadNewNotificationsNoId', this.typeId)) {
+        this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
+        this.$refs.newNotificationsListComponent.update();
       }
-    },
-    props: ['typeId'],
-    async created() { //грузить между id и решить проблему со скроллами
-      await this.$store.dispatch('notifications/clear');
-      await this.$store.dispatch('notifications/initNotifications', this.typeId);
-      this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
-      this.type = this.$store.getters['notificationTypes/getTypeNameById'](this.typeId);
-      this.timer = setInterval(async () => {
-        if(await this.$store.dispatch('notifications/loadNewNotificationsNoId', this.typeId)){
-          this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
-        }
-      }, 5000);
-      this.$nextTick(() => {
-        const list = this.$refs.notifList;
-        if (list) {
-          list.scrollTop = list.scrollHeight;
-        }
-      });
-    },
-    mounted() {
-      
-    },
-    beforeUnmount() {
-     clearInterval(this.timer)
-    },
-    methods:{
-      async listScroll() {
+    }, 5000);
+    this.$nextTick(() => {
+      const list = this.$refs.notifList;
+      if (list) {
+        list.scrollTop = list.scrollHeight;
+      }
+    });
+  },
+  mounted() {
+
+  },
+  beforeUnmount() {
+    clearInterval(this.timer)
+  },
+  methods: {
+    async listScroll() {
       const list = this.$refs.notifList;
       if (list.scrollTop <= 0) {
         console.log('Up');
@@ -66,37 +69,37 @@ import notificationComponent from './notificationComponent.vue';
           });
         }
       }
-}
     }
   }
+}
 </script>
-  
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.type{
+.type {
   border-bottom: solid;
 }
-h3{
+
+h3 {
   margin: 10px;
   background-color: #c7c7c7;
   border-radius: 10px;
   padding: 10px;
   text-align: center;
 }
-.notificationList{
-  display: inline-block;
-  width: 100%;
-  overflow: auto;
-}
-.notification{
+
+.notificationList {
+
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  overflow: auto;
 }
-.listContainer{
- display: flex;
- width: 100%;
- flex-direction: column;
+
+.listContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
 }
 </style>
-  

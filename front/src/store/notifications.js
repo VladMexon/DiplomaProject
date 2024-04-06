@@ -41,6 +41,11 @@ export default {
             return 0;
           });
         }
+      },
+      getNewNotifications(state){
+        let newNotifications = state.newNotifications;
+        state.newNotifications = [];
+        return newNotifications;
       }
     },
     mutations: {
@@ -146,7 +151,12 @@ export default {
         try{
           const response = await api.notification.getNewNotifications({lastId: getters.getLastId, id_notification_type: 0});
           if(response.data.notifications.length > 0){
-            commit('ADD_NOTIFICATIONS', {buttons: response.data.buttons, notifications: response.data.notifications.filter((item) => item.id_notification_type == id_notification_type)});
+            if(id_notification_type != 0){
+              commit('ADD_NOTIFICATIONS', {buttons: response.data.buttons, notifications: response.data.notifications.filter((item) => item.id_notification_type == id_notification_type)});
+            }else{
+              commit('ADD_NOTIFICATIONS', {buttons: response.data.buttons, notifications: response.data.notifications});
+            }
+            
             commit('ADD_NEW_NOTIFICATIONS', response.data);
             commit('SET_LASTID', response.data.notifications[0].id_sended);
             return true;
