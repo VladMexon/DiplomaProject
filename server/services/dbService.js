@@ -153,6 +153,14 @@ class authService{
             values: [recipientId]
         });
     }
+
+    async newButton(buttonText, idNotification, idSendNotification){
+        return db.none({
+            name: 'newButton',
+            text: 'INSERT INTO system.buttons(button_text, id_notification, id_send_notification) VALUES($1, $2, $3)',
+            values: [buttonText, idNotification, idSendNotification]
+        });
+    }
 }
 
 module.exports = new authService();

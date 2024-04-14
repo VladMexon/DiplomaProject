@@ -20,6 +20,9 @@ class notificatonService{
         });
         return result.id_notification;
     }
+    async newButton(buttonText, idNotification, idSendNotification){
+        return await dbService.newButton(buttonText, idNotification, idSendNotification);
+    }
     async sendNotification(idNotification, idSender, idRecipient){
         return await dbService.newSendedNotification(idNotification, idSender, idRecipient);
     }

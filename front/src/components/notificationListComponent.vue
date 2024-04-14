@@ -28,7 +28,7 @@ export default {
     }
   },
   props: ['typeId'],
-  async created() { //грузить между id и решить проблему со скроллами
+  async created() {
     await this.$store.dispatch('notifications/initNotifications', this.typeId);
     this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
     this.type = this.$store.getters['notificationTypes/getTypeNameById'](this.typeId);
