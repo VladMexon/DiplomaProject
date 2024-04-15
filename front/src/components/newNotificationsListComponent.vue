@@ -5,7 +5,9 @@
             :typeName="$store.getters['notificationTypes/getTypeNameById'](notification.id_notification_type)"
             :senderName="$store.getters['employees/getEmployeeNameById'](notification.id_sender)"
             :sendTime="notification.time"
-            :id_sended="notification.id_sended" @closeModal="closeModal"/>
+            :id_sended="notification.id_sended" @closeModal="closeModal"
+            :buttons="$store.getters['notifications/getButtonsByNotifId'](notification.id_notification)"
+            :reacted="notification.is_reacted"/>
     </div>
 </template>
 

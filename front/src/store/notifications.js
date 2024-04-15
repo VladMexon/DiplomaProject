@@ -50,6 +50,9 @@ export default {
       },
       getUpdateFunctions(state){
         return state.updateFunctions;
+      },
+      getButtonsByNotifId:(state) => (id) => {
+        return state.buttons.filter(button => button.id_notification == id);
       }
     },
     mutations: {
@@ -93,12 +96,6 @@ export default {
         state.lastId = payload
       },
       CLEAR_NOTIFICATIONS(state){
-        state.notifications = [];
-        state.buttons = [];
-        state.firstId = 0;
-        state.lastId = 0;
-      },
-      CLEAR_NEW_NOTIFICATIONS(state){
         state.notifications = [];
         state.buttons = [];
         state.firstId = 0;

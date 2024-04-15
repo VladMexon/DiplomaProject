@@ -161,6 +161,12 @@ class authService{
             values: [buttonText, idNotification, idSendNotification]
         });
     }
+
+    async getButtons(ids){
+        return db.manyOrNone(
+            'SELECT * FROM system.buttons WHERE id_notification IN ($1:csv)', [ids]
+        );
+    }
 }
 
 module.exports = new authService();

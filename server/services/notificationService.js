@@ -43,6 +43,9 @@ class notificatonService{
     async getLastId(idEmployee){
         return await dbService.getLastId(idEmployee);
     }
+    async getButtons(ids){
+        return await dbService.getButtons(ids);
+    }
 }
 
 module.exports = new notificatonService();

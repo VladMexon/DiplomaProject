@@ -39,6 +39,7 @@
     methods: {
         async logout(){
           await this.$store.dispatch('user/logout');
+          this.$store.commit('notifications/CLEAR_NOTIFICATIONS');
           this.$router.push({name: "loginPage"});
         },
         openModal(){

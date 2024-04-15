@@ -58,8 +58,12 @@ class dataController {
             const lastId = req.body.lastId;
             const typeId = req.body.id_notification_type;
             const notifications = await notificationService.getPrevNotifications(idEmployee, lastId, typeId);
-            console.log(notifications);
-            res.json({notifications, buttons: null});
+            const ids = notifications.map(notification => notification.id_notification);
+            let buttons;
+            if(ids.length > 0){
+                buttons = await notificationService.getButtons(ids);
+            }
+            res.json({notifications, buttons});
         }catch(e){
             next(e);
         }
@@ -70,8 +74,12 @@ class dataController {
             const lastId = req.body.lastId;
             const typeId = req.body.id_notification_type;
             const notifications = await notificationService.getNewNotifications(idEmployee, lastId, typeId);
-            console.log(notifications);
-            res.json({notifications, buttons: null});
+            const ids = notifications.map(notification => notification.id_notification);
+            let buttons;
+            if(ids.length > 0){
+                buttons = await notificationService.getButtons(ids);
+            }
+            res.json({notifications, buttons});
         }catch(e){
             next(e);
         }

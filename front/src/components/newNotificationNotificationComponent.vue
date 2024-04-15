@@ -6,13 +6,16 @@
         <p>Отправитель: {{ senderName }}</p>
         <p>Тип: {{ typeName }}</p>
         <p>Время отправки: {{ sendTime }}</p>
+        <div class="reactionButtons" v-if="!reacted">
+          <button v-for="(button, indexB) in buttons" @click="react(button.id_send_notification)" v-bind:key="indexB">{{ button.button_text }}</button>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
     name: 'newnNotificationNotificationComponent',
-    props: ['header', 'text', 'typeName', 'senderName', 'sendTime', 'id_sended'],
+    props: ['header', 'text', 'typeName', 'senderName', 'sendTime', 'id_sended', 'buttons', 'reacted'],
     methods:{
         closeModal(id_sended){
             this.$emit('closeModal', id_sended);

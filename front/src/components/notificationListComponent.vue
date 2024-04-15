@@ -8,7 +8,9 @@
         :header="notification.notification_header" :text="notification.notification_text"
         :typeName="$store.getters['notificationTypes/getTypeNameById'](notification.id_notification_type)"
         :senderName="$store.getters['employees/getEmployeeNameById'](notification.id_sender)"
-        :sendTime="notification.time" />
+        :sendTime="new Date(notification.time).toString()"
+        :buttons="$store.getters['notifications/getButtonsByNotifId'](notification.id_notification)"
+        :reacted="notification.is_reacted"/>
     </div>
   </div>
 </template>
