@@ -6,8 +6,8 @@
     <p>Тип: {{ typeName }}</p>
     <p>Время отправки: {{ sendTime }}</p>
     <div class="reactionButtons" v-if="!reacted">
-      <button v-for="(button, indexB) in buttons" @click="react(button.id_send_notification)" v-bind:key="indexB">{{
-      button.button_text }}</button>
+      <button v-for="(button, indexB) in buttons" @click="react(id_sended, button.id_send_notification)"
+        v-bind:key="indexB">{{ button.button_text }}</button>
     </div>
   </div>
 
@@ -16,10 +16,11 @@
 <script>
 export default {
   name: 'notificationComponent',
-  props: ['header', 'text', 'typeName', 'senderName', 'sendTime', 'buttons', 'reacted'],
+  props: ['header', 'text', 'typeName', 'senderName', 'sendTime', 'buttons', 'reacted', 'id_sended'],
   methods: {
-    react(id_send_notification) {
-      console.log('Sended ' + id_send_notification);
+    async react(id_sended, id_send_notification) {
+      await this.$store.dispatch('notifications/react', {id_sended, id_send_notification});
+      console.log('sended ' + id_send_notification);
     }
   }
 }

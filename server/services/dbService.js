@@ -167,6 +167,22 @@ class authService{
             'SELECT * FROM system.buttons WHERE id_notification IN ($1:csv)', [ids]
         );
     }
+
+    async setReacted(id_sended){
+        return db.none({
+            name: 'setReacted',
+            text: 'UPDATE system.sended_notifications SET is_reacted = true WHERE id_sended = $1',
+            values: [id_sended]
+        });
+    }
+
+    async getRecipients(id_notificaiton){
+        return db.manyOrNone({
+            name: 'getRecipients',
+            text: 'SELECT id_employee FROM system.notification_recipients WHERE id_notification = $1 ',
+            values: [id_notificaiton]
+        });
+    }
 }
 
 module.exports = new authService();

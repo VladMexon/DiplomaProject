@@ -44,7 +44,7 @@
       <button @click="addButton">Добавить кнопочку</button>
       <button @click="removeButton">Убавить кнопочку</button>
       <div v-for="index in numOfButtonst" v-bind:key="index" class="newButton">
-        <input type="text" v-bind:id="'buttonName' + index" placeholder="Введите текст кнопочки" ref="buttonName"/>
+        <input type="text" v-bind:id="'buttonName' + index" placeholder="Введите текст кнопочки" ref="buttonName" />
         <div>
           Настройка ответа
           <button @click="showSttings(index)">Показать/Скрыть</button>
@@ -58,17 +58,19 @@
               <ul class="list">
                 <li v-for="(department, indexD) in departmentData" v-bind:key="indexD">
                   Отдел: {{ department.department.department_name }}
-                  <input type="checkbox" v-bind:value="'R' + index + '_' +indexD" v-bind:id="'R' + index  + 'd' + indexD" v-model="departmentsCheckboxes">
+                  <input type="checkbox" v-bind:value="'R' + index + '_' + indexD"
+                    v-bind:id="'R' + index + 'd' + indexD" v-model="departmentsCheckboxes">
                   <ul>
                     <li v-for="(position, indexP) in department.positions" v-bind:key="indexP">
                       Должность: {{ position.position.position_name }}
                       <input type="checkbox" v-bind:value="'R' + index + '_' + indexD + '_' + indexP"
-                        v-bind:id="'R' + index  + 'd' + indexD + 'p' + indexP" v-model="positionsCheckboxes">
+                        v-bind:id="'R' + index + 'd' + indexD + 'p' + indexP" v-model="positionsCheckboxes">
                       <ul>
                         <li v-for="(recipient, indexR) in position.recipients" v-bind:key="indexR">
                           Сотрудник: {{ recipient.second_name }} {{ recipient.first_name }} {{ recipient.middle_name }}
                           <input type="checkbox" v-bind:value="'R' + index + '_' + indexD + '_' + indexP + '_' + indexR"
-                            v-bind:id="'R' + index  + 'd' + indexD + 'p' + indexP + 'r' + indexR" v-model="recipientsCheckboxes">
+                            v-bind:id="'R' + index + 'd' + indexD + 'p' + indexP + 'r' + indexR"
+                            v-model="recipientsCheckboxes">
                         </li>
                       </ul>
                     </li>
@@ -108,14 +110,14 @@ export default {
     async sendNotification() {
       let recipients = [];
       let buttons = [];
-      for(let i = 0; i < this.numOfButtonst; i++){
-        buttons.push({buttonText:this.$refs.buttonName[i].value, notificationHeader:this.$refs.headerResp[i].value, notificationText:this.$refs.textResp[i].value, recipients:[]});
+      for (let i = 0; i < this.numOfButtonst; i++) {
+        buttons.push({ buttonText: this.$refs.buttonName[i].value, notificationHeader: this.$refs.headerResp[i].value, notificationText: this.$refs.textResp[i].value, recipients: [] });
       }
       this.recipientsCheckboxes.forEach(checkbox => {
-        if(checkbox[0] != 'R'){
+        if (checkbox[0] != 'R') {
           let ids = checkbox.split("_"); //department_position_employee
           recipients.push(this.departmentData[ids[0]].positions[ids[1]].recipients[ids[2]].id_employee);
-        }else{
+        } else {
           let ids = checkbox.slice(1).split("_");
           console.log(ids);
           buttons[ids[0] - 1].recipients.push(this.departmentData[ids[1]].positions[ids[2]].recipients[ids[3]].id_employee);
@@ -195,33 +197,43 @@ export default {
       console.log(val);
       //this.recipientsCheckboxes = [];
       val.forEach((value) => {
-        let data = value.split("_");
-        let len = this.departmentData[parseInt(data[0])].positions[parseInt(data[1])].recipients.length;
-        for (let i = 0; i < len; i++) {
-          let newCheckBox = `${data[0]}_${data[1]}_${i}`
-          if (!this.recipientsCheckboxes.includes(newCheckBox)) {
-            this.recipientsCheckboxes.push(newCheckBox);
+        if (value[0] != 'R') {
+          let data = value.split("_");
+          let len = this.departmentData[parseInt(data[0])].positions[parseInt(data[1])].recipients.length;
+          for (let i = 0; i < len; i++) {
+            let newCheckBox = `${data[0]}_${data[1]}_${i}`
+            if (!this.recipientsCheckboxes.includes(newCheckBox)) {
+              this.recipientsCheckboxes.push(newCheckBox);
+            }
           }
         }
+        else {
+          console.log('implement me');
+        }
+
       })
     },
     departmentsCheckboxes(val) {
       console.log(val);
       val.forEach((value) => {
-        let data = value;
-        let lenP = this.departmentData[parseInt(data)].positions.length;
-        for (let i = 0; i < lenP; i++) {
-          let newCheckBox = `${data}_${i}`
-          if (!this.positionsCheckboxes.includes(newCheckBox)) {
-            this.positionsCheckboxes.push(newCheckBox);
-          }
-          let lenR = this.departmentData[parseInt(data)].positions[parseInt(i)].recipients.length;
-          for (let j = 0; j < lenR; j++) {
-            let newCheckBox = `${data}_${i}_${j}`
-            if (!this.recipientsCheckboxes.includes(newCheckBox)) {
-              this.recipientsCheckboxes.push(newCheckBox);
+        if (value[0] != 'R') {
+          let data = value;
+          let lenP = this.departmentData[parseInt(data)].positions.length;
+          for (let i = 0; i < lenP; i++) {
+            let newCheckBox = `${data}_${i}`
+            if (!this.positionsCheckboxes.includes(newCheckBox)) {
+              this.positionsCheckboxes.push(newCheckBox);
+            }
+            let lenR = this.departmentData[parseInt(data)].positions[parseInt(i)].recipients.length;
+            for (let j = 0; j < lenR; j++) {
+              let newCheckBox = `${data}_${i}_${j}`
+              if (!this.recipientsCheckboxes.includes(newCheckBox)) {
+                this.recipientsCheckboxes.push(newCheckBox);
+              }
             }
           }
+        }else{
+          console.log('implement me');
         }
       })
     }
@@ -291,17 +303,20 @@ textarea {
   resize: none;
   overflow: auto;
 }
-.buttonList{
+
+.buttonList {
   background-color: rgb(221, 221, 221);
   border-radius: 10px;
   padding: 7px;
 }
-.respSett{
+
+.respSett {
   background-color: rgb(194, 193, 193);
   border-radius: 10px;
   padding: 7px;
 }
-.newButton{
+
+.newButton {
   background-color: rgb(206, 206, 206);
   border-radius: 10px;
   padding: 7px;

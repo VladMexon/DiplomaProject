@@ -93,6 +93,18 @@ class dataController {
             next(e);
         }
     }
+    async react(req, res, next){
+        try{
+            const idEmployee = req.user.id_employee;
+            const id_sended = req.body.id_sended;
+            const id_send_notification = req.body.id_send_notification;
+            await notificationService.react(idEmployee, id_sended, id_send_notification);
+
+            res.json('ok');
+        }catch(e){
+            next(e);
+        }
+    }
 }
 
 module.exports = new dataController();

@@ -1,13 +1,15 @@
 <template>
     <div class="container">
-        <h4 class="newNotifHeader">Новое уведомление <button class="closeButton" @click="closeModal(id_sended)"><img src="../assets/close.png" width="15" height="15" alt="submit"/></button></h4>
+        <h4 class="newNotifHeader">Новое уведомление <button class="closeButton" @click="closeModal(id_sended)"><img
+                    src="../assets/close.png" width="15" height="15" alt="submit" /></button></h4>
         <h4>{{ header }}</h4>
         <p>{{ text }}</p>
         <p>Отправитель: {{ senderName }}</p>
         <p>Тип: {{ typeName }}</p>
         <p>Время отправки: {{ sendTime }}</p>
         <div class="reactionButtons" v-if="!reacted">
-          <button v-for="(button, indexB) in buttons" @click="react(button.id_send_notification)" v-bind:key="indexB">{{ button.button_text }}</button>
+            <button v-for="(button, indexB) in buttons" @click="react(id_sended, button.id_send_notification)"
+                v-bind:key="indexB">{{ button.button_text }}</button>
         </div>
     </div>
 </template>
@@ -16,9 +18,13 @@
 export default {
     name: 'newnNotificationNotificationComponent',
     props: ['header', 'text', 'typeName', 'senderName', 'sendTime', 'id_sended', 'buttons', 'reacted'],
-    methods:{
-        closeModal(id_sended){
+    methods: {
+        closeModal(id_sended) {
             this.$emit('closeModal', id_sended);
+        },
+        async react(id_sended, id_send_notification) {
+            await this.$store.dispatch('notifications/react', {id_sended, id_send_notification});
+            console.log('sended ' + id_send_notification);
         }
     }
 }
@@ -56,15 +62,18 @@ p {
     border-radius: 5px;
     margin: 2px;
 }
-.closeButton{
-  float: right;
-  border: 0;
-  background:none;
+
+.closeButton {
+    float: right;
+    border: 0;
+    background: none;
 }
-.closeButton:hover{
-  background-color: #cacaca;
+
+.closeButton:hover {
+    background-color: #cacaca;
 }
-.closeButton:active{
-  background-color: #bebebe;
+
+.closeButton:active {
+    background-color: #bebebe;
 }
 </style>

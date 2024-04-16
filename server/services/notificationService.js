@@ -46,6 +46,14 @@ class notificatonService{
     async getButtons(ids){
         return await dbService.getButtons(ids);
     }
+    async react(idEmployee, id_sended, id_send_notification){
+        const recipients = await dbService.getRecipients(id_send_notification);
+        recipients.forEach(async (item) => {
+            await dbService.newSendedNotification(id_send_notification, idEmployee, item.id_employee);
+        })
+        await dbService.setReacted(id_sended);
+        return
+    }
 }
 
 module.exports = new notificatonService();

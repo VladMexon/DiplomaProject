@@ -10,7 +10,8 @@
         :senderName="$store.getters['employees/getEmployeeNameById'](notification.id_sender)"
         :sendTime="new Date(notification.time).toString()"
         :buttons="$store.getters['notifications/getButtonsByNotifId'](notification.id_notification)"
-        :reacted="notification.is_reacted"/>
+        :reacted="notification.is_reacted"
+        :id_sended="notification.id_sended"/>
     </div>
   </div>
 </template>
@@ -85,7 +86,6 @@ h3 {
 }
 
 .notificationList {
-
   display: flex;
   flex-direction: column;
   align-items: center;
