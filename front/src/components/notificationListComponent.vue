@@ -3,7 +3,7 @@
     <div class="type">
       <h3> {{ type }} </h3>
     </div>
-    <div class="notificationList" :key="typeId" ref="notifList" @scroll="listScroll">
+    <div class="notificationList" ref="notifList" @scroll="listScroll">
       <notificationComponent v-for="(notification, index) in notifications" v-bind:key="index"
         :header="notification.notification_header" :text="notification.notification_text"
         :typeName="$store.getters['notificationTypes/getTypeNameById'](notification.id_notification_type)"
