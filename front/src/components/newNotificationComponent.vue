@@ -48,6 +48,15 @@
           Настройка ответа
           <button @click="showSttings(index)">Показать/Скрыть</button>
           <div v-show="visibleSettingsIds.includes(index)" class="respSett">
+            <label>
+              Тип уведомления:
+              <select name="notifTypes" ref="notifType">
+                <option v-bind:value="type.id_type"
+                  v-for="(type, index) in $store.getters['notificationTypes/getnotificationTypes']" v-bind:key="index">
+                  {{type.type_name }}</option>
+              </select>
+            </label>
+            <br>
             Заголовок уведомления
             <textarea placeholder="Введите текст заголовка уведомления" ref="headerResp"></textarea>
             Текст уведомления
@@ -108,7 +117,7 @@ export default {
       let recipients = [];
       let buttons = [];
       for (let i = 0; i < this.numOfButtonst; i++) {
-        buttons.push({ buttonText: this.$refs.buttonName[i].value, notificationHeader: this.$refs.headerResp[i].value, notificationText: this.$refs.textResp[i].value, recipients: [] });
+        buttons.push({ buttonText: this.$refs.buttonName[i].value, notificationHeader: this.$refs.headerResp[i].value, notificationText: this.$refs.textResp[i].value, recipients: [], notificationType: this.$refs.notifType[i].value});
       }
       this.recipientsCheckboxes.forEach(checkbox => {
         if (checkbox[0] != 'R') {
@@ -148,22 +157,22 @@ export default {
     },
     showSttings(id) {
       if (this.visibleSettingsIds.includes(id)) {
-        this.visibleSettingsIds = this.visibleSettingsIds.filter((item) => 
+        this.visibleSettingsIds = this.visibleSettingsIds.filter((item) =>
           item != id
         )
       } else {
         this.visibleSettingsIds.push(id);
       }
     },
-    markAll(value){
+    markAll(value) {
       let ids;
-      if(value[0] != 'R'){
+      if (value[0] != 'R') {
         ids = value.split('_');
-      }else{
+      } else {
         ids = value.slice(1).split('_');
       }
       if (value[0] != 'R') {
-        if(ids.length != 1){
+        if (ids.length != 1) {
           let len = this.departmentData[parseInt(ids[0])].positions[parseInt(ids[1])].recipients.length;
           for (let i = 0; i < len; i++) {
             let newCheckBox = `${ids[0]}_${ids[1]}_${i}`
@@ -171,7 +180,7 @@ export default {
               this.recipientsCheckboxes.push(newCheckBox);
             }
           }
-        }else{
+        } else {
           let lenP = this.departmentData[parseInt(ids)].positions.length;
           for (let i = 0; i < lenP; i++) {
             let lenR = this.departmentData[parseInt(ids)].positions[parseInt(i)].recipients.length;
@@ -183,8 +192,8 @@ export default {
             }
           }
         }
-      }else{
-        if(ids.length == 3){
+      } else {
+        if (ids.length == 3) {
           let len = this.departmentData[parseInt(ids[1])].positions[parseInt(ids[2])].recipients.length;
           for (let i = 0; i < len; i++) {
             let newCheckBox = `R${ids[0]}_${ids[1]}_${ids[2]}_${i}`
@@ -192,7 +201,7 @@ export default {
               this.recipientsCheckboxes.push(newCheckBox);
             }
           }
-        }else{
+        } else {
           let lenP = this.departmentData[parseInt(ids[1])].positions.length;
           for (let i = 0; i < lenP; i++) {
             let lenR = this.departmentData[parseInt(ids[1])].positions[parseInt(i)].recipients.length;

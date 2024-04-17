@@ -44,7 +44,7 @@ class dataController {
                 await notificationService.sendNotification(result, idEmployee, recipient);
             });
             body.buttons.forEach(async (button) => {
-                let result2 = await notificationService.newNotification(button.notificationHeader, button.notificationText, idEmployee, false, body.sendDate, 8, false, button.recipients);
+                let result2 = await notificationService.newNotification(button.notificationHeader, button.notificationText, idEmployee, false, body.sendDate, button.notificationType, false, button.recipients);
                 notificationService.newButton(button.buttonText, result, result2)
             });
             res.status(200).json('ok'); //немного странное решенеие которое решает проблему хранения информации о том отреагировал ли человек на уведомление (получатели привязаны к уведомлению(но это для черновиков) а также в таблице sended_notifications тоже есть связь отправитьель-получатель)
