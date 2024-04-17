@@ -89,7 +89,7 @@
 
 <script>
 export default {
-  name: 'leftMenuComponent',
+  name: 'newNotificationComponent',
   data() {
     return {
       selectedType: null,
@@ -151,9 +151,9 @@ export default {
     },
     showSttings(id) {
       if (this.visibleSettingsIds.includes(id)) {
-        this.visibleSettingsIds = this.visibleSettingsIds.filter((item) => {
+        this.visibleSettingsIds = this.visibleSettingsIds.filter((item) => 
           item != id
-        })
+        )
       } else {
         this.visibleSettingsIds.push(id);
       }
