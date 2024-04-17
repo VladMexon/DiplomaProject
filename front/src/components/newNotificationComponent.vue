@@ -21,12 +21,11 @@
       <ul class="list">
         <li v-for="(department, indexD) in departmentData" v-bind:key="indexD">
           Отдел: {{ department.department.department_name }}
-          <input type="checkbox" v-bind:value="indexD" v-bind:id="'d' + indexD" v-model="departmentsCheckboxes">
+          <button class="markAll" @click="markAll(`${indexD}`)">Выделить все</button>
           <ul>
             <li v-for="(position, indexP) in department.positions" v-bind:key="indexP">
               Должность: {{ position.position.position_name }}
-              <input type="checkbox" v-bind:value="indexD + '_' + indexP" v-bind:id="'d' + indexD + 'p' + indexP"
-                v-model="positionsCheckboxes">
+              <button class="markAll" @click="markAll(`${indexD}_${indexP}`)">Выделить все</button>
               <ul>
                 <li v-for="(recipient, indexR) in position.recipients" v-bind:key="indexR">
                   Сотрудник: {{ recipient.second_name }} {{ recipient.first_name }} {{ recipient.middle_name }}
@@ -58,13 +57,11 @@
               <ul class="list">
                 <li v-for="(department, indexD) in departmentData" v-bind:key="indexD">
                   Отдел: {{ department.department.department_name }}
-                  <input type="checkbox" v-bind:value="'R' + index + '_' + indexD"
-                    v-bind:id="'R' + index + 'd' + indexD" v-model="departmentsCheckboxes">
+                  <button class="markAll" @click="markAll(`R${index}_${indexD}`)">Выделить все</button>
                   <ul>
                     <li v-for="(position, indexP) in department.positions" v-bind:key="indexP">
                       Должность: {{ position.position.position_name }}
-                      <input type="checkbox" v-bind:value="'R' + index + '_' + indexD + '_' + indexP"
-                        v-bind:id="'R' + index + 'd' + indexD + 'p' + indexP" v-model="positionsCheckboxes">
+                      <button class="markAll" @click="markAll(`R${index}_${indexD}_${indexP}`)">Выделить все</button>
                       <ul>
                         <li v-for="(recipient, indexR) in position.recipients" v-bind:key="indexR">
                           Сотрудник: {{ recipient.second_name }} {{ recipient.first_name }} {{ recipient.middle_name }}
@@ -157,6 +154,57 @@ export default {
       } else {
         this.visibleSettingsIds.push(id);
       }
+    },
+    markAll(value){
+      let ids;
+      if(value[0] != 'R'){
+        ids = value.split('_');
+      }else{
+        ids = value.slice(1).split('_');
+      }
+      if (value[0] != 'R') {
+        if(ids.length != 1){
+          let len = this.departmentData[parseInt(ids[0])].positions[parseInt(ids[1])].recipients.length;
+          for (let i = 0; i < len; i++) {
+            let newCheckBox = `${ids[0]}_${ids[1]}_${i}`
+            if (!this.recipientsCheckboxes.includes(newCheckBox)) {
+              this.recipientsCheckboxes.push(newCheckBox);
+            }
+          }
+        }else{
+          let lenP = this.departmentData[parseInt(ids)].positions.length;
+          for (let i = 0; i < lenP; i++) {
+            let lenR = this.departmentData[parseInt(ids)].positions[parseInt(i)].recipients.length;
+            for (let j = 0; j < lenR; j++) {
+              let newCheckBox = `${ids}_${i}_${j}`
+              if (!this.recipientsCheckboxes.includes(newCheckBox)) {
+                this.recipientsCheckboxes.push(newCheckBox);
+              }
+            }
+          }
+        }
+      }else{
+        if(ids.length == 3){
+          let len = this.departmentData[parseInt(ids[1])].positions[parseInt(ids[2])].recipients.length;
+          for (let i = 0; i < len; i++) {
+            let newCheckBox = `R${ids[0]}_${ids[1]}_${ids[2]}_${i}`
+            if (!this.recipientsCheckboxes.includes(newCheckBox)) {
+              this.recipientsCheckboxes.push(newCheckBox);
+            }
+          }
+        }else{
+          let lenP = this.departmentData[parseInt(ids[1])].positions.length;
+          for (let i = 0; i < lenP; i++) {
+            let lenR = this.departmentData[parseInt(ids[1])].positions[parseInt(i)].recipients.length;
+            for (let j = 0; j < lenR; j++) {
+              let newCheckBox = `R${ids[0]}_${ids[1]}_${i}_${j}`
+              if (!this.recipientsCheckboxes.includes(newCheckBox)) {
+                this.recipientsCheckboxes.push(newCheckBox);
+              }
+            }
+          }
+        }
+      }
     }
   },
   computed: {
@@ -192,52 +240,8 @@ export default {
   watch: {
     recipientsCheckboxes(val) {
       console.log(val);
-    },
-    positionsCheckboxes(val) {
-      console.log(val);
-      //this.recipientsCheckboxes = [];
-      val.forEach((value) => {
-        if (value[0] != 'R') {
-          let data = value.split("_");
-          let len = this.departmentData[parseInt(data[0])].positions[parseInt(data[1])].recipients.length;
-          for (let i = 0; i < len; i++) {
-            let newCheckBox = `${data[0]}_${data[1]}_${i}`
-            if (!this.recipientsCheckboxes.includes(newCheckBox)) {
-              this.recipientsCheckboxes.push(newCheckBox);
-            }
-          }
-        }
-        else {
-          console.log('implement me');
-        }
-
-      })
-    },
-    departmentsCheckboxes(val) {
-      console.log(val);
-      val.forEach((value) => {
-        if (value[0] != 'R') {
-          let data = value;
-          let lenP = this.departmentData[parseInt(data)].positions.length;
-          for (let i = 0; i < lenP; i++) {
-            let newCheckBox = `${data}_${i}`
-            if (!this.positionsCheckboxes.includes(newCheckBox)) {
-              this.positionsCheckboxes.push(newCheckBox);
-            }
-            let lenR = this.departmentData[parseInt(data)].positions[parseInt(i)].recipients.length;
-            for (let j = 0; j < lenR; j++) {
-              let newCheckBox = `${data}_${i}_${j}`
-              if (!this.recipientsCheckboxes.includes(newCheckBox)) {
-                this.recipientsCheckboxes.push(newCheckBox);
-              }
-            }
-          }
-        }else{
-          console.log('implement me');
-        }
-      })
     }
-  },
+  }
 }
 </script>
 
