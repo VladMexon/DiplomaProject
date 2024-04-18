@@ -1,93 +1,108 @@
 <template>
   <div class="new-notificiation center">
     <h3>Новое уведомление</h3>
-    <button class="closeButton" @click="closeModal"><img src="../assets/close.png" width="30" height="30"
-        alt="submit" /></button>
-    <br />
-    <label>
-      Тип уведомления:
-      <select name="notifTypes" v-model="selectedType">
-        <option v-bind:value="type.id_type"
-          v-for="(type, index) in $store.getters['notificationTypes/getnotificationTypes']" v-bind:key="index">{{
+    <button class="closeButton" @click="closeModal"><img src="../assets/close.png" width="30" height="30" /></button>
+    <div class="form">
+      <div class="block">
+        <label>
+          Тип уведомления:
+          <select name="notifTypes" v-model="selectedType">
+            <option v-bind:value="type.id_type"
+              v-for="(type, index) in $store.getters['notificationTypes/getnotificationTypes']" v-bind:key="index">{{
       type.type_name }}</option>
-      </select>
-    </label>
-    <h4>Заголовок уведомления</h4>
-    <textarea v-model="notificationHeader" placeholder="Введите текст заголовка уведомления"></textarea>
-    <h4>Текст уведомления</h4>
-    <textarea v-model="notificationText" placeholder="Введите текст уведомления"></textarea>
-    <h4>Получатель</h4>
-    <div class="recipients">
-      <ul class="list">
-        <li v-for="(department, indexD) in departmentData" v-bind:key="indexD">
-          Отдел: {{ department.department.department_name }}
-          <button class="markAll" @click="markAll(`${indexD}`)">Выделить все</button>
-          <ul>
-            <li v-for="(position, indexP) in department.positions" v-bind:key="indexP">
-              Должность: {{ position.position.position_name }}
-              <button class="markAll" @click="markAll(`${indexD}_${indexP}`)">Выделить все</button>
+          </select>
+        </label>
+      </div>
+      <div class="block">
+        <h4>Заголовок уведомления</h4>
+        <textarea v-model="notificationHeader" placeholder="Введите текст заголовка уведомления"></textarea>
+      </div>
+      <div class="block">
+        <h4>Текст уведомления</h4>
+        <textarea v-model="notificationText" placeholder="Введите текст уведомления"></textarea>
+      </div>
+      <div class="block">
+        <h4>Получатель</h4>
+        <div class="recipients">
+          <ul class="list">
+            <li v-for="(department, indexD) in departmentData" v-bind:key="indexD">
+              Отдел: {{ department.department.department_name }}
+              <button class="markAll" @click="markAll(`${indexD}`)">Выделить все</button>
               <ul>
-                <li v-for="(recipient, indexR) in position.recipients" v-bind:key="indexR">
-                  Сотрудник: {{ recipient.second_name }} {{ recipient.first_name }} {{ recipient.middle_name }}
-                  <input type="checkbox" v-bind:value="indexD + '_' + indexP + '_' + indexR"
-                    v-bind:id="'d' + indexD + 'p' + indexP + 'r' + indexR" v-model="recipientsCheckboxes">
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <h4>Кнопочки</h4>
-    <div class="buttonList">
-      <button @click="addButton">Добавить кнопочку</button>
-      <button @click="removeButton">Убавить кнопочку</button>
-      <div v-for="index in numOfButtonst" v-bind:key="index" class="newButton">
-        <input type="text" v-bind:id="'buttonName' + index" placeholder="Введите текст кнопочки" ref="buttonName" />
-        <div>
-          Настройка ответа
-          <button @click="showSttings(index)">Показать/Скрыть</button>
-          <div v-show="visibleSettingsIds.includes(index)" class="respSett">
-            <label>
-              Тип уведомления:
-              <select name="notifTypes" ref="notifType">
-                <option v-bind:value="type.id_type"
-                  v-for="(type, index) in $store.getters['notificationTypes/getnotificationTypes']" v-bind:key="index">
-                  {{type.type_name }}</option>
-              </select>
-            </label>
-            <br>
-            Заголовок уведомления
-            <textarea placeholder="Введите текст заголовка уведомления" ref="headerResp"></textarea>
-            Текст уведомления
-            <textarea placeholder="Введите текст уведомления" ref="textResp"></textarea>
-            Получатель
-            <div class="recipients">
-              <ul class="list">
-                <li v-for="(department, indexD) in departmentData" v-bind:key="indexD">
-                  Отдел: {{ department.department.department_name }}
-                  <button class="markAll" @click="markAll(`R${index}_${indexD}`)">Выделить все</button>
+                <li v-for="(position, indexP) in department.positions" v-bind:key="indexP">
+                  Должность: {{ position.position.position_name }}
+                  <button class="markAll" @click="markAll(`${indexD}_${indexP}`)">Выделить все</button>
                   <ul>
-                    <li v-for="(position, indexP) in department.positions" v-bind:key="indexP">
-                      Должность: {{ position.position.position_name }}
-                      <button class="markAll" @click="markAll(`R${index}_${indexD}_${indexP}`)">Выделить все</button>
-                      <ul>
-                        <li v-for="(recipient, indexR) in position.recipients" v-bind:key="indexR">
-                          Сотрудник: {{ recipient.second_name }} {{ recipient.first_name }} {{ recipient.middle_name }}
-                          <input type="checkbox" v-bind:value="'R' + index + '_' + indexD + '_' + indexP + '_' + indexR"
-                            v-bind:id="'R' + index + 'd' + indexD + 'p' + indexP + 'r' + indexR"
-                            v-model="recipientsCheckboxes">
-                        </li>
-                      </ul>
+                    <li v-for="(recipient, indexR) in position.recipients" v-bind:key="indexR">
+                      Сотрудник: {{ recipient.second_name }} {{ recipient.first_name }} {{ recipient.middle_name }}
+                      <input type="checkbox" v-bind:value="indexD + '_' + indexP + '_' + indexR"
+                        v-bind:id="'d' + indexD + 'p' + indexP + 'r' + indexR" v-model="recipientsCheckboxes">
                     </li>
                   </ul>
                 </li>
               </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="block">
+        <h4>Кнопочки</h4>
+        <div class="buttonList">
+          <button @click="addButton">Добавить кнопочку</button>
+          <button @click="removeButton">Убавить кнопочку</button>
+          <div v-for="index in numOfButtonst" v-bind:key="index" class="newButton">
+            <input type="text" placeholder="Введите текст кнопочки" ref="buttonName" />
+            <div>
+              Настройка ответа
+              <button @click="showSttings(index)">Показать/Скрыть</button>
+              <div v-show="visibleSettingsIds.includes(index)" class="respSett">
+                <label>
+                  Тип уведомления:
+                  <select name="notifTypes" ref="notifType">
+                    <option v-bind:value="type.id_type"
+                      v-for="(type, index) in $store.getters['notificationTypes/getnotificationTypes']"
+                      v-bind:key="index">
+                      {{ type.type_name }}</option>
+                  </select>
+                </label>
+                <br>
+                Заголовок уведомления
+                <textarea placeholder="Введите текст заголовка уведомления" ref="headerResp"></textarea>
+                Текст уведомления
+                <textarea placeholder="Введите текст уведомления" ref="textResp"></textarea>
+                Получатель
+                <div class="recipients">
+                  <ul class="list">
+                    <li v-for="(department, indexD) in departmentData" v-bind:key="indexD">
+                      Отдел: {{ department.department.department_name }}
+                      <button class="markAll" @click="markAll(`R${index}_${indexD}`)">Выделить все</button>
+                      <ul>
+                        <li v-for="(position, indexP) in department.positions" v-bind:key="indexP">
+                          Должность: {{ position.position.position_name }}
+                          <button class="markAll" @click="markAll(`R${index}_${indexD}_${indexP}`)">Выделить
+                            все</button>
+                          <ul>
+                            <li v-for="(recipient, indexR) in position.recipients" v-bind:key="indexR">
+                              Сотрудник: {{ recipient.second_name }} {{ recipient.first_name }} {{ recipient.middle_name
+                              }}
+                              <input type="checkbox"
+                                v-bind:value="'R' + index + '_' + indexD + '_' + indexP + '_' + indexR"
+                                v-bind:id="'R' + index + 'd' + indexD + 'p' + indexP + 'r' + indexR"
+                                v-model="recipientsCheckboxes">
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <br />
     <p v-if="error">Произошла ошибка при запросе</p>
     <button class="sendNotification" @click="sendNotification">Отправить</button>
   </div>
@@ -117,7 +132,7 @@ export default {
       let recipients = [];
       let buttons = [];
       for (let i = 0; i < this.numOfButtonst; i++) {
-        buttons.push({ buttonText: this.$refs.buttonName[i].value, notificationHeader: this.$refs.headerResp[i].value, notificationText: this.$refs.textResp[i].value, recipients: [], notificationType: this.$refs.notifType[i].value});
+        buttons.push({ buttonText: this.$refs.buttonName[i].value, notificationHeader: this.$refs.headerResp[i].value, notificationText: this.$refs.textResp[i].value, recipients: [], notificationType: this.$refs.notifType[i].value });
       }
       this.recipientsCheckboxes.forEach(checkbox => {
         if (checkbox[0] != 'R') {
@@ -261,8 +276,7 @@ export default {
   border-radius: 10px;
   padding: 30px;
   width: 500px;
-  height: 570px;
-  overflow: auto;
+  height: auto;
 }
 
 .center {
@@ -283,6 +297,10 @@ h3 {
 
 h4 {
   margin: 5px;
+}
+
+.list {
+  margin: 0px;
 }
 
 .closeButton {
@@ -311,7 +329,7 @@ h4 {
 }
 
 textarea {
-  width: 100%;
+  width: 98%;
   height: 70px;
   resize: none;
   overflow: auto;
@@ -334,5 +352,22 @@ textarea {
   border-radius: 10px;
   padding: 7px;
   margin: 3px;
+}
+
+.block {
+  background-color: rgb(221, 221, 221);
+  border-radius: 10px;
+  padding: 5px;
+  margin: 3px;
+}
+
+.form{
+  height: 500px;
+  overflow: auto;
+}
+
+.sendNotification{
+  width: 100%;
+  height: 30px;
 }
 </style>

@@ -15,7 +15,7 @@ module.exports = function(req, res, next){
             return next(ApiError.UnauthorizedError());
         }
         req.user = userData;
-        console.log(userData);
+        //console.log(userData);
         next();
     } catch(e) {
         return next(ApiError.UnauthorizedError());

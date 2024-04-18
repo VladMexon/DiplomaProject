@@ -54,6 +54,10 @@ class notificatonService{
         await dbService.setReacted(id_sended);
         return
     }
+    async readed(id_sended){
+        await dbService.setReacted(id_sended);
+        return
+    }
 }
 
 module.exports = new notificatonService();

@@ -10,6 +10,7 @@
         <div class="reactionButtons" v-if="!reacted">
             <button v-for="(button, indexB) in buttons" @click="react(id_sended, button.id_send_notification)"
                 v-bind:key="indexB">{{ button.button_text }}</button>
+            <button @click="react(id_sended, null)" v-if="buttons.length == 0">Прочитано</button>
         </div>
     </div>
 </template>
@@ -23,8 +24,9 @@ export default {
             this.$emit('closeModal', id_sended);
         },
         async react(id_sended, id_send_notification) {
-            await this.$store.dispatch('notifications/react', {id_sended, id_send_notification});
-            console.log('sended ' + id_send_notification);
+            await this.$store.dispatch('notifications/react', { id_sended, id_send_notification });
+            this.$emit('closeModal', id_sended);
+            //console.log('sended ' + id_send_notification);
         }
     }
 }
@@ -75,5 +77,33 @@ p {
 
 .closeButton:active {
     background-color: #bebebe;
+}
+
+.reactionButtons {
+  display: flex;
+  flex-direction: row;
+  background-color: #b6b6b6;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
+}
+
+.reactionButtons button {
+  margin: 5px;
+  height: 25px;
+  width: 100%;
+  background-color: rgb(219, 219, 219);
+  color: black;
+  border: 2px solid #a0a0a0;
+  border-radius: 5px;
+
+}
+
+.reactionButtons button:hover {
+  background-color: rgb(207, 207, 207);
+}
+
+.reactionButtons button:active {
+  background-color: rgb(189, 189, 189);
 }
 </style>

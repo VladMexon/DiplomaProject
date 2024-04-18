@@ -8,6 +8,7 @@
     <div class="reactionButtons" v-if="!reacted">
       <button v-for="(button, indexB) in buttons" @click="react(id_sended, button.id_send_notification)"
         v-bind:key="indexB">{{ button.button_text }}</button>
+      <button @click="react(id_sended, null)" v-if="buttons.length == 0">Прочитано</button>
     </div>
   </div>
 
@@ -19,8 +20,7 @@ export default {
   props: ['header', 'text', 'typeName', 'senderName', 'sendTime', 'buttons', 'reacted', 'id_sended'],
   methods: {
     async react(id_sended, id_send_notification) {
-      await this.$store.dispatch('notifications/react', {id_sended, id_send_notification});
-      console.log('sended ' + id_send_notification);
+      await this.$store.dispatch('notifications/react', { id_sended, id_send_notification });
     }
   }
 }
@@ -32,30 +32,40 @@ export default {
   margin: 10px;
   background-color: #c7c7c7;
   border-radius: 10px;
-  padding: 20px;
+  padding: 10px;
   width: 400px;
 }
 
 h3 {
   text-align: center;
-  margin-top: 0px;
+  margin: 3px;
 }
 
 p {
   background-color: #b6b6b6;
   padding: 5px;
   border-radius: 5px;
-  margin-bottom: 0px;
+  margin: 3px;
+}
+
+.reactionButtons {
+  display: flex;
+  flex-direction: row;
+  background-color: #b6b6b6;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
 }
 
 button {
   margin: 5px;
   height: 40px;
-  width: 100px;
+  width: 100%;
   background-color: rgb(219, 219, 219);
   color: black;
   border: 2px solid #a0a0a0;
   border-radius: 5px;
+
 }
 
 button:hover {

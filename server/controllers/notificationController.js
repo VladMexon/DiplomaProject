@@ -98,8 +98,11 @@ class dataController {
             const idEmployee = req.user.id_employee;
             const id_sended = req.body.id_sended;
             const id_send_notification = req.body.id_send_notification;
-            await notificationService.react(idEmployee, id_sended, id_send_notification);
-
+            if(id_send_notification != null){
+                await notificationService.react(idEmployee, id_sended, id_send_notification);
+            }else{
+                await notificationService.readed(id_sended);
+            }
             res.json('ok');
         }catch(e){
             next(e);
