@@ -183,6 +183,22 @@ class authService{
             values: [id_notificaiton]
         });
     }
+
+    async getIdTypes(){
+        return db.manyOrNone({
+            name: 'getIdTypes',
+            text: 'SELECT id_type FROM system.notification_types',
+        });
+    }
+
+    async getUnreactedCount(id_recipient, id_notification_type){
+        return db.one({
+            name: 'getUnreactedCount',
+            text: 'SELECT COUNT(*) as count FROM system.notifications AS n JOIN system.sended_notifications AS sn ON n.id_notification = sn.id_notification WHERE sn.id_recipient = $1 AND n.id_notification_type = $2 AND sn.is_reacted = false;',
+            values: [id_recipient, id_notification_type]
+        });
+    }
+
 }
 
 module.exports = new authService();

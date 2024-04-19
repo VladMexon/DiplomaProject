@@ -4,7 +4,7 @@
       <h3>Уведомления</h3>
       <div class="bList">
         <button v-for="(type, index) in this.notificationTypes" @click="changeType(type.id_type)" v-bind:key="index">{{
-          type.type_name }}</button>
+          type.type_name }} {{ this.$store.getters['notificationTypes/getUnreactedCountByType'](type.id_type) }}!</button>
         <button @click="changeType(0)">Все</button>
       </div>
     </div>
@@ -27,6 +27,7 @@ export default {
   },
   async created() {
     await this.$store.dispatch('notificationTypes/loadNotificationTypes');
+    await this.$store.dispatch('notificationTypes/loadUnreactedCount')
     this.notificationTypes = this.$store.getters['notificationTypes/getnotificationTypes'];
   },
   methods: {

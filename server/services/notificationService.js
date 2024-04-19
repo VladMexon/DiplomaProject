@@ -58,6 +58,14 @@ class notificatonService{
         await dbService.setReacted(id_sended);
         return
     }
+    async getUnreactedCount(id_recipient){
+        const ids = await dbService.getIdTypes();
+        const result = [];
+        for(let i=0; i<ids.length; i++){
+            result.push({count: (await dbService.getUnreactedCount(id_recipient, ids[i].id_type)).count, id_type: ids[i].id_type});
+        }
+        return result;
+    }
 }
 
 module.exports = new notificatonService();

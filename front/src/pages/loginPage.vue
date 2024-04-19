@@ -1,5 +1,4 @@
 <template>
-    <headerComponent/>
     <form @submit.prevent="logInto">
       <div class="loginForm">
         <div class="items">
@@ -16,7 +15,6 @@
 </template>
   
 <script>
-import headerComponent from '../components/headerComponent.vue';
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
   export default {
@@ -32,9 +30,6 @@ import { required, minLength } from '@vuelidate/validators'
         },
         error: false
       }
-    },
-    components: {
-      headerComponent
     },
     methods: {
       async logInto(){

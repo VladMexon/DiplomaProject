@@ -25,6 +25,7 @@ export default {
         },
         async react(id_sended, id_send_notification) {
             await this.$store.dispatch('notifications/react', { id_sended, id_send_notification });
+            await this.$store.dispatch('notificationTypes/loadUnreactedCount');
             this.$emit('closeModal', id_sended);
             //console.log('sended ' + id_send_notification);
         }

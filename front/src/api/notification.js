@@ -15,6 +15,9 @@ export default function (instance) {
     getLastId() {
       return instance.get('/notification/lastId')
     },
+    getUnreactedCount() {
+      return instance.get('/notification/unreactedCount')
+    },
     sendNotification(payload) {
       return instance.post('/notification/send', payload)
     },

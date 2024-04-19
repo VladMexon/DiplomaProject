@@ -108,6 +108,15 @@ class dataController {
             next(e);
         }
     }
+    async getUnreactedCount(req, res, next){
+        try{
+            const idEmployee = req.user.id_employee;
+            const result = await notificationService.getUnreactedCount(idEmployee);
+            res.json(result);
+        }catch(e){
+            next(e);
+        }
+    }
 }
 
 module.exports = new dataController();

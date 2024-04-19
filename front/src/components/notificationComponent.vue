@@ -21,6 +21,7 @@ export default {
   methods: {
     async react(id_sended, id_send_notification) {
       await this.$store.dispatch('notifications/react', { id_sended, id_send_notification });
+      await this.$store.dispatch('notificationTypes/loadUnreactedCount');
     }
   }
 }

@@ -1,5 +1,4 @@
 <template>
-  <headerComponent />
   <div class="container">
     <leftMenuComponent @changeType="changeType" @newNotificationModal="openNewNotificationModal()" />
     <notificationListComponent :typeId="currnentType" v-bind:key="currnentType" />
@@ -9,7 +8,6 @@
 </template>
 
 <script>
-import headerComponent from '../components/headerComponent.vue';
 import leftMenuComponent from '@/components/leftMenuComponent.vue';
 import newNotificationComponent from '../components/newNotificationComponent';
 import notificationListComponent from '@/components/notificationListComponent.vue';
@@ -17,7 +15,6 @@ import newNotificationsListComponent from '@/components/newNotificationsListComp
 export default {
   name: 'mainPage',
   components: {
-    headerComponent,
     leftMenuComponent,
     newNotificationComponent,
     notificationListComponent,
@@ -34,6 +31,7 @@ export default {
     this.timer = setInterval(async () => {
       if (await this.$store.dispatch('notifications/loadNewNotificationsNoId', this.currnentType)) {
         this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.currnentType);
+        await this.$store.dispatch('notificationTypes/loadUnreactedCount')
       }
     }, 5000);
   },
@@ -56,6 +54,6 @@ export default {
 <style scoped>
 .container {
   display: flex;
-  height: 92.3%;
+  height: calc(100% - 53px);
 }
 </style>
