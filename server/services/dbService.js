@@ -101,8 +101,16 @@ class authService{
     async getCredentials(user_name){
         return db.one({
             name: 'getCredInfo',
-            text: 'SELECT password, id_employee, valid, roles  FROM system.credentials WHERE user_name = $1',
+            text: 'SELECT password, id_employee, valid, roles  FROM system.credentials WHERE user_name = $1 AND valid = true',
             values: [user_name]
+        });
+    }
+
+    async getCredentialsByIdEmployee(id_employee){
+        return db.one({
+            name: 'getCredInfo',
+            text: 'SELECT password, id_employee, valid, roles  FROM system.credentials WHERE id_employee = $1 AND valid = true',
+            values: [id_employee]
         });
     }
     

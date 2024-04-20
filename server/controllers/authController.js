@@ -10,9 +10,7 @@ class authController{
                 return next(ApiError.BadRequest('Ошибка валидации', errors.array()));
             }
             const {login, password, id_employee} = req.body;
-            const tokens = await authService.registration(login, password, id_employee); //tokens
-
-            return res.json({tokens});
+            return res.json();
         }catch(e){
             next(e);
         }
@@ -22,7 +20,7 @@ class authController{
             const {login, password} = req.body;
             const payload = await authService.login(login, password);
             res.cookie('refreshToken', payload.tokens.refreshToken, {maxAge: process.env.REFRESH_TOKEN_EXPIRES * 24 * 60 * 60 * 1000, httpOnly: true})
-            return res.json({accessToken: payload.tokens.accessToken, userData: payload.userData});
+            return res.json({accessToken: payload.tokens.accessToken, userData: payload.userData, roles: payload.roles});
         }catch(e){
             next(e);
         }
@@ -44,7 +42,7 @@ class authController{
             const {refreshToken} = req.cookies;
             const payload = await authService.refresh(refreshToken);
             res.cookie('refreshToken', payload.tokens.refreshToken, {maxAge: process.env.REFRESH_TOKEN_EXPIRES * 24 * 60 * 60 * 1000, httpOnly: true})
-            return res.json({accessToken: payload.tokens.accessToken, userData: payload.employeeInfo});
+            return res.json({accessToken: payload.tokens.accessToken, userData: payload.employeeInfo, roles: payload.roles});
         }catch(e){
             next(e);
         }

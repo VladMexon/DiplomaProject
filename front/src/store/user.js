@@ -4,7 +4,8 @@ export default {
     namespaced: true,
     state: {
       user: null,
-      auth: false
+      auth: false,
+      roles: null
     },
     getters: {
       getUser(state) {
@@ -12,17 +13,23 @@ export default {
       },
       getAuthState(state){
         return state.auth
+      },
+      getRoles(state){
+        return state.roles
       }
     },
     mutations: {
       SET_USER(state, payload) {
-        state.user = payload
+        state.user = payload;
       },
       DELETE_USER(state) {
-        state.user = null
+        state.user = null;
       },
       SET_AUTH_STATE(state, payload) {
-        state.auth = payload
+        state.auth = payload;
+      },
+      SET_ROLES(state, payload){
+        state.roles = payload;
       }
     },
     actions: {
@@ -36,6 +43,7 @@ export default {
           localStorage.setItem('token', response.data.accessToken);
           commit('SET_USER', response.data.userData);
           commit('SET_AUTH_STATE', true);
+          commit('SET_ROLES', response.data.roles);
           return false;
         }catch(e){
           console.log(e);
@@ -59,6 +67,7 @@ export default {
           localStorage.setItem('token', response.data.accessToken);
           commit('SET_USER', response.data.userData);
           commit('SET_AUTH_STATE', true);
+          commit('SET_ROLES', response.data.roles);
         }catch(e){
           console.log(e.response?.data?.message);
         }

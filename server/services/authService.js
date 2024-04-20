@@ -30,11 +30,12 @@ class authService{
             throw ApiError.BadRequest('Неверный логи или пароль');
         }
         const userData = await dbService.getEmployee(userCredentials.id_employee);
-        const tokens = await tokenService.generateToken({id_employee: userCredentials.id_employee, id_position: userData.id_position, time: Date.now()}); //ВАЖНО
+        const tokens = await tokenService.generateToken({id_employee: userCredentials.id_employee, id_position: userData.id_position, roles: userCredentials.roles, time: Date.now()}); //ВАЖНО
         await tokenService.saveToken(tokens.refreshToken, userCredentials.id_employee);
         return {
             tokens,
-            userData: userData
+            userData: userData,
+            roles: userCredentials.roles
         }
     }
 
@@ -48,16 +49,18 @@ class authService{
             throw ApiError.UnauthorizedError();
         }
         const userData = tokenService.validateRefreshToken(refresh_token); //id_employee, id_position
+        const userCredentials = await dbService.getCredentialsByIdEmployee(userData.id_employee);
         const tokenFromDb = dbService.getRefreshToken(refresh_token);
         if(!userData || !tokenFromDb){
             throw ApiError.UnauthorizedError();
         }
         const employeeInfo = await dbService.getEmployee(userData.id_employee);
-        const tokens = await tokenService.generateToken({id_employee: userData.id_employee, id_position: userData.id_position, time: Date.now()}); //ВАЖНО
+        const tokens = await tokenService.generateToken({id_employee: userData.id_employee, id_position: userData.id_position, roles: userCredentials.roles, time: Date.now()}); //ВАЖНО
         await tokenService.saveToken(tokens.refreshToken, userData.id_employee);
         return {
             tokens,
-            employeeInfo
+            employeeInfo,
+            roles: userCredentials.roles
         }
     }
     async getUserInfo(id_employee){
