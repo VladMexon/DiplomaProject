@@ -24,7 +24,7 @@ export default {
       },
       getUnreactedCountByType: (state) => (id) => {
         if(id != 0){
-          if(state.unreactedCount.length != 0){
+          if(state.unreactedCount != null){
             return state.unreactedCount.find(type => type.id_type == id).count;
           }else{
             return 0;

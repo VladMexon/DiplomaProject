@@ -1,6 +1,6 @@
 <template>
     <div class="newNotifListContainer">
-        <newNotificationNotificationComponent v-for="(notification, index) in notifications" v-bind:key="index"
+        <newNotificationNotificationComponent v-for="(notification, index) in this.$store.getters['notifications/getNewNotifications']" v-bind:key="index"
             :header="notification.notification_header" :text="notification.notification_text"
             :typeName="$store.getters['notificationTypes/getTypeNameById'](notification.id_notification_type)"
             :senderName="$store.getters['employees/getEmployeeNameById'](notification.id_sender)"
@@ -23,19 +23,10 @@ export default {
             notifications: []
         }
     },
-    created(){
-        this.$store.commit('notifications/ADD_UPDATE_FUNCTION', this.update);
-    },
     methods: {
-        update() {
-            this.notifications.push(...this.$store.getters['notifications/getNewNotifications']);
-        },
         closeModal(id_sended){
-            this.notifications = this.notifications.filter((item) => item.id_sended != id_sended);
+            this.$store.commit('notifications/REMOVE_NOTIFICATION_NOTIFICATION', id_sended);
         }
-    },
-    beforeUnmount(){
-        this.$store.commit('notifications/REMOVE_UPDATE_FUNCTION', this.update);
     }
 }
 </script>

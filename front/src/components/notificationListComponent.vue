@@ -1,10 +1,10 @@
 <template>
   <div class="listContainer">
     <div class="type">
-      <h3> {{ type }} </h3>
+      <h3> {{ this.$store.getters['notificationTypes/getTypeNameById'](this.typeId) }} </h3>
     </div>
     <div class="notificationList" ref="notifList" @scroll="listScroll">
-      <notificationComponent v-for="(notification, index) in notifications" v-bind:key="index"
+      <notificationComponent v-for="(notification, index) in this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId)" v-bind:key="index"
         :header="notification.notification_header" :text="notification.notification_text"
         :typeName="$store.getters['notificationTypes/getTypeNameById'](notification.id_notification_type)"
         :senderName="$store.getters['employees/getEmployeeNameById'](notification.id_sender)"
@@ -23,35 +23,21 @@ export default {
   components: {
     notificationComponent
   },
-  data() {
-    return {
-      notifications: null,
-      type: null,
-      timer: null
-    }
-  },
   props: ['typeId'],
-  async created() {
+  async beforeCreate() {
     await this.$store.dispatch('notifications/initNotifications', this.typeId);
-    this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
-    this.type = this.$store.getters['notificationTypes/getTypeNameById'](this.typeId);
-    this.$store.commit('notifications/ADD_UPDATE_FUNCTION', this.update);
     this.$nextTick(() => {
-      if (this.notifications.length > 0) {
+      try{
         const list = this.$refs.notifList;
         if (list) {
           list.scrollTop = list.scrollHeight;
         }
+      }catch(e){
+        console.log('no notifications');
       }
     });
   },
-  beforeUnmount() {
-    this.$store.commit('notifications/REMOVE_UPDATE_FUNCTION', this.update);
-  },
   methods: {
-    update(){
-      this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
-    },
     async listScroll() {
       const list = this.$refs.notifList;
       if (list.scrollTop <= 0) {

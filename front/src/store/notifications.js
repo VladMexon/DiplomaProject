@@ -6,9 +6,7 @@ export default {
     newNotifications: [],
     buttons: [],
     firstId: 0,
-    lastId: 0,
-    updateFunctions: [],
-    newNotificationListClose: null
+    lastId: 0
   },
   getters: {
     getButtons(state) {
@@ -49,12 +47,7 @@ export default {
       }
     },
     getNewNotifications(state) {
-      let newNotifications = state.newNotifications;
-      state.newNotifications = [];
-      return newNotifications;
-    },
-    getUpdateFunctions(state) {
-      return state.updateFunctions;
+      return state.newNotifications;
     },
     getButtonsByNotifId: (state) => (id) => {
       return state.buttons.filter(button => button.id_notification == id);
@@ -90,14 +83,11 @@ export default {
       state.firstId = 0;
       state.lastId = 0;
     },
-    ADD_UPDATE_FUNCTION(state, func) {
-      state.updateFunctions.push(func);
-    },
-    REMOVE_UPDATE_FUNCTION(state, func) {
-      state.updateFunctions = state.updateFunctions.filter((item) => item !== func);
-    },
     SET_NOTIFICATION_REACTED(state, payload) {
       state.notifications.find((item) => item.id_sended == payload).is_reacted = true;
+    },
+    REMOVE_NOTIFICATION_NOTIFICATION(state, paylaod) {
+      state.newNotifications = state.newNotifications.filter((item) => item.id_sended != paylaod);
     }
   },
   actions: {
@@ -157,9 +147,6 @@ export default {
           }
           commit('ADD_NEW_NOTIFICATIONS', response.data);
           commit('SET_LASTID', response.data.notifications[0].id_sended);
-          getters.getUpdateFunctions.forEach(func => {
-            func();
-          });
           return true;
         }
         return false;
@@ -167,13 +154,10 @@ export default {
         console.log(e);
       }
     },
-    async react({ commit, getters }, paylaod) {
+    async react({ commit }, paylaod) {
       try {
-        await api.notification.react({id_sended: paylaod.id_sended, id_send_notification: paylaod.id_send_notification});
-        commit('SET_NOTIFICATION_REACTED', paylaod.id_sended)
-        getters.getUpdateFunctions.forEach(func => {
-          func();
-        });
+        await api.notification.react({ id_sended: paylaod.id_sended, id_send_notification: paylaod.id_send_notification });
+        commit('SET_NOTIFICATION_REACTED', paylaod.id_sended);
       } catch (e) {
         console.log(e);
       }

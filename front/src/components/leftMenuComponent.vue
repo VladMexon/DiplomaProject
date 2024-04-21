@@ -3,7 +3,7 @@
     <div class="menu">
       <h3>Уведомления</h3>
       <div class="bList">
-        <button v-for="(type, index) in this.notificationTypes" @click="changeType(type.id_type)" v-bind:key="index">{{
+        <button v-for="(type, index) in this.$store.getters['notificationTypes/getnotificationTypes']" @click="changeType(type.id_type)" v-bind:key="index">{{
           type.type_name }} {{ this.$store.getters['notificationTypes/getUnreactedCountByType'](type.id_type) }}!</button>
         <button @click="changeType(0)">Все</button>
       </div>
@@ -22,13 +22,11 @@ export default {
   data() {
     return {
       selectedTypeId: null,
-      notificationTypes: null,
     }
   },
-  async created() {
+  async beforeCreate() {
     await this.$store.dispatch('notificationTypes/loadNotificationTypes');
     await this.$store.dispatch('notificationTypes/loadUnreactedCount')
-    this.notificationTypes = this.$store.getters['notificationTypes/getnotificationTypes'];
   },
   methods: {
     changeType(index) {
