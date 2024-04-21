@@ -9,11 +9,11 @@ class authService{
         });
     }
 
-    async registerEmployee(user_name, password, id_employee, roles){
+    async registerEmployee(user_name, password, id_employee, roles, email){
         return db.one({
             name: 'registerEmployee',
-            text: 'INSERT INTO system.credentials(user_name, password, id_employee, roles) VALUES($1, $2, $3, $4) RETURNING id_cred',
-            values: [user_name, password, id_employee, JSON.stringify(roles)]
+            text: 'INSERT INTO system.credentials(user_name, password, id_employee, roles, email) VALUES($1, $2, $3, $4, $5) RETURNING id_cred',
+            values: [user_name, password, id_employee, JSON.stringify(roles), email]
         });
     }
     
@@ -100,7 +100,7 @@ class authService{
 
     async getCredentials(user_name){
         return db.one({
-            name: 'getCredInfo',
+            name: 'getCredInfoByUserName',
             text: 'SELECT password, id_employee, valid, roles  FROM system.credentials WHERE user_name = $1 AND valid = true',
             values: [user_name]
         });
@@ -108,7 +108,7 @@ class authService{
 
     async getCredentialsByIdEmployee(id_employee){
         return db.one({
-            name: 'getCredInfo',
+            name: 'getCredInfoByEmployeeId',
             text: 'SELECT password, id_employee, valid, roles  FROM system.credentials WHERE id_employee = $1 AND valid = true',
             values: [id_employee]
         });

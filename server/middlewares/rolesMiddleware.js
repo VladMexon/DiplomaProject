@@ -1,8 +1,9 @@
 const ApiError = require('../exeptions/apiError');
 
 module.exports = function (req, res, next) {
-    if(!req.uesrData.roles.contains(req.requiredRole)){
-        return next(ApiError.AccessDenied());
+    console.log(res.locals.user.roles);
+    if(!res.locals.user.roles.includes(res.locals.requiredRole)){
+        next(ApiError.AccessDenied());
     }else{
         next();
     }

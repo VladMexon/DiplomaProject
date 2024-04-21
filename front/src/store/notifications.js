@@ -104,7 +104,8 @@ export default {
         const response = await api.notification.getNewNotifications({ lastId: 0, id_notification_type });
         commit('SET_NOTIFICATIONS', response.data);
         //commit('SET_LASTID', response.data.notifications[0].id_sended);
-        commit('SET_FIRSTID', response.data.notifications[response.data.notifications.length - 1].id_sended);
+        if (response.data.notifications.length > 0)
+          commit('SET_FIRSTID', response.data.notifications[response.data.notifications.length - 1].id_sended);
       } catch (e) {
         console.log(e);
       }

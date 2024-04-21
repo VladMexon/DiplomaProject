@@ -11,6 +11,7 @@
     <div class="menu">
       <div class="bList">
         <button @click="newNotificationModal()">Новое уведомление</button>
+        <button @click="registerPage()" v-if="this.$store.getters['user/getRoles'].includes('register')">Регистрация новых пользователей</button>
       </div>
     </div>
   </div>
@@ -34,6 +35,9 @@ export default {
     },
     newNotificationModal() {
       this.$emit('newNotificationModal');
+    },
+    registerPage(){
+      this.$router.push({name: "register"});
     }
   }
 }

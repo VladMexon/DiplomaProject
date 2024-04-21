@@ -6,19 +6,12 @@ const ApiError = require('../exeptions/apiError');
 
 
 class authService{
-    async  registration(login, password, id_employee){
-        const candidate = await dbService.getCredentials(login);
-        if(candidate){
-            throw new ApiError.BadRequest('Пользователь с таким именем уже существует');
-        }
+    async  registration(paylaod){
+        let id_employee = (await dbService.newEmployee(paylaod)).id_employee;
+        let login = 'unk'+id_employee;
+        let password = '12345';
         const hashedPassword = await bcrypt.hash(password, 3);
-        //const activationLink = uuid.v4();
-        await dbService.registerEmployee(login, hashedPassword, id_employee);
-        const tokens = tokenService.generateToken({idEmployee: id_employee, login: login});
-        await dbService.setRefreshToken(tokens.refreshToken, id_employee)
-        return {
-            tokens    
-        }
+        await dbService.registerEmployee(login, hashedPassword, id_employee, ['user'], paylaod.email);
     }
     async login(login, password){
         const userCredentials = await dbService.getCredentials(login);

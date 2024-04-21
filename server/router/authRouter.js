@@ -12,7 +12,7 @@ router.post('/login',
     body('login').isLength({min: 3, max: 50}), 
     authController.login
 )
-router.post('/register', authMiddleware, (req, res, next)=> {req.requiredRole = "register"; next()}, rolesMiddleware, authController.register)
+router.post('/register', authMiddleware, (req, res, next)=> {res.locals.requiredRole = "register"; next()}, rolesMiddleware, authController.register)
 router.get('/logout', authController.logout)
 router.get('/refresh', authController.refresh)
 //router.get('/user', authMiddleware, authController.user)

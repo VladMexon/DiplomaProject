@@ -38,7 +38,7 @@ class dataController {
     async sendNotification(req, res, next){
         try{
             const body = req.body;
-            const idEmployee = req.user.id_employee;
+            const idEmployee = res.locals.user.id_employee;
             const result = await notificationService.newNotification(body.notificationHeader, body.notificationText, idEmployee, body.isDelayed, body.sendDate, body.notificationType, body.isDrafted, body.recipients);
             await body.recipients.forEach(async (recipient) => {
                 await notificationService.sendNotification(result, idEmployee, recipient);
@@ -54,7 +54,7 @@ class dataController {
     }
     async getNotifications(req, res, next){
         try{
-            const idEmployee = req.user.id_employee;
+            const idEmployee = res.locals.user.id_employee;
             const lastId = req.body.lastId;
             const typeId = req.body.id_notification_type;
             const notifications = await notificationService.getPrevNotifications(idEmployee, lastId, typeId);
@@ -70,32 +70,41 @@ class dataController {
     }
     async getNewNotifications(req, res, next){
         try{
-            const idEmployee = req.user.id_employee;
+            const idEmployee = res.locals.user.id_employee;
             const lastId = req.body.lastId;
             const typeId = req.body.id_notification_type;
             const notifications = await notificationService.getNewNotifications(idEmployee, lastId, typeId);
-            const ids = notifications.map(notification => notification.id_notification);
-            let buttons;
-            if(ids.length > 0){
-                buttons = await notificationService.getButtons(ids);
+            if(notifications.length != 0){
+                const ids = notifications.map(notification => notification.id_notification);
+                let buttons;
+                if(ids.length > 0){
+                    buttons = await notificationService.getButtons(ids);
+                }
+                res.json({notifications, buttons});
+            }else{
+                res.json({notifications:[], buttons:[]});
             }
-            res.json({notifications, buttons});
         }catch(e){
             next(e);
         }
     }
     async getLastId(req, res, next){
         try{
-            const idEmployee = req.user.id_employee;
+            const idEmployee = res.locals.user.id_employee;
             const responce = await notificationService.getLastId(idEmployee);
-            res.json(responce.id_sended);
+            if(responce != null){
+                res.json(responce.id_sended);
+            }else{
+                res.json(0);
+            }
+            
         }catch(e){
             next(e);
         }
     }
     async react(req, res, next){
         try{
-            const idEmployee = req.user.id_employee;
+            const idEmployee = res.locals.user.id_employee;
             const id_sended = req.body.id_sended;
             const id_send_notification = req.body.id_send_notification;
             if(id_send_notification != null){
@@ -110,7 +119,7 @@ class dataController {
     }
     async getUnreactedCount(req, res, next){
         try{
-            const idEmployee = req.user.id_employee;
+            const idEmployee = res.locals.user.id_employee;
             const result = await notificationService.getUnreactedCount(idEmployee);
             res.json(result);
         }catch(e){

@@ -5,11 +5,7 @@ const { validationResult } = require('express-validator');
 class authController{
     async register(req, res, next){ //тут все переделать(вообще никакние токены не нужны) https://www.youtube.com/watch?v=fN25fMQZ2v0 с 37 минуты(реализовать рассылку)
         try{
-            const errors = validationResult(req);
-            if(!errors.isEmpty()){
-                return next(ApiError.BadRequest('Ошибка валидации', errors.array()));
-            }
-            const {login, password, id_employee} = req.body;
+            authService.registration(req.body);
             return res.json();
         }catch(e){
             next(e);
@@ -49,7 +45,7 @@ class authController{
     }
     async  user(req, res, next){ 
         try{
-            const id_employee = req.user.id_employee;
+            const id_employee = res.locals.id_employee;
             const user_info = await authService.getUserInfo(id_employee);
             res.json(user_info);
         }catch(e){

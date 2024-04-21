@@ -16,7 +16,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => { //kill it with fire!!!!!
   await store.dispatch('user/checkAuth');
   if(store.getters['user/getAuthState'] == true){
-    if(to.name == 'mainPage'){
+    if(to.name == 'mainPage' || to.name == 'register'){
       await store.dispatch('positions/loadPositions');
       await store.dispatch('employees/loadEmployees');
       await store.dispatch('departments/loadDepartments');
