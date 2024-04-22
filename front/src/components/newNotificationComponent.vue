@@ -244,20 +244,23 @@ export default {
             department: department,
             positions: []
           };
-          recipients.filter(recipient => recipient.id_department == department.id_department).forEach(recipient => {
+          let depRec = recipients.filter(recipient => recipient.id_department == department.id_department);
+          depRec.forEach(recipient => {
             let position = positions.find(position => position.id_position == recipient.id_position);
             if (!watchedPositions.includes(position)) {
               watchedPositions.push(position);
               let positionData = {
                 position: position,
-                recipients: recipients.filter(recipient => recipient.id_position == position.id_position)
+                recipients: depRec.filter(recipient => recipient.id_position == position.id_position)
               };
               departmentData.positions.push(positionData);
             }
           });
           data.push(departmentData);
+          watchedPositions = [];
         });
       }
+      console.log(data);
       return data;
     }
   },
