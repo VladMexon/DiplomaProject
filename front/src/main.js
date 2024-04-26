@@ -20,6 +20,7 @@ router.beforeEach(async (to, from, next) => { //kill it with fire!!!!!
       await store.dispatch('positions/loadPositions');
       await store.dispatch('employees/loadEmployees');
       await store.dispatch('departments/loadDepartments');
+      await store.dispatch('notificationTypes/loadNotificationTypes');
     }
     if(to.name == 'loginPage'){
       next({ name: 'mainPage' });

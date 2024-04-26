@@ -4,14 +4,14 @@
       <h3> {{ this.$store.getters['notificationTypes/getTypeNameById'](this.typeId) }} </h3>
     </div>
     <div class="notificationList" ref="notifList" @scroll="listScroll">
-      <notificationComponent v-for="(notification, index) in this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId)" v-bind:key="index"
-        :header="notification.notification_header" :text="notification.notification_text"
+      <notificationComponent
+        v-for="(notification, index) in this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId)"
+        v-bind:key="index" :header="notification.notification_header" :text="notification.notification_text"
         :typeName="$store.getters['notificationTypes/getTypeNameById'](notification.id_notification_type)"
         :senderName="$store.getters['employees/getEmployeeNameById'](notification.id_sender)"
         :sendTime="new Date(notification.time).toString()"
         :buttons="$store.getters['notifications/getButtonsByNotifId'](notification.id_notification)"
-        :reacted="notification.is_reacted"
-        :id_sended="notification.id_sended"/>
+        :reacted="notification.is_reacted" :id_sended="notification.id_sended" />
     </div>
   </div>
 </template>
@@ -27,12 +27,12 @@ export default {
   async beforeCreate() {
     await this.$store.dispatch('notifications/initNotifications', this.typeId);
     this.$nextTick(() => {
-      try{
+      try {
         const list = this.$refs.notifList;
         if (list) {
           list.scrollTop = list.scrollHeight;
         }
-      }catch(e){
+      } catch (e) {
         console.log('no notifications');
       }
     });
@@ -44,7 +44,6 @@ export default {
         console.log('Up');
         const scrollHeightBefore = list.scrollHeight; // Запоминаем текущую высоту скролла
         if (await this.$store.dispatch('notifications/loadPrevNotifications', this.typeId)) {
-          this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.typeId);
           this.$nextTick(() => {
             const scrollHeightAfter = list.scrollHeight; // Получаем новую высоту скролла после подгрузки
             const scrollDifference = scrollHeightAfter - scrollHeightBefore; // Вычисляем разницу

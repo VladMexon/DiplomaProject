@@ -3,15 +3,21 @@ const bcrypt = require('bcrypt');
 const tokenService = require('./tokenService');
 //const uuid = require('uuid'); //Пойдет в топку скорее всего(использовалось для подверждения адреса электронной почты)
 const ApiError = require('../exeptions/apiError');
-
+const mailService = require('./mailService');
+const passfather = require('passfather');
 
 class authService{
     async  registration(paylaod){
+        let login = paylaod.email;
+        const userCredentials = await dbService.getCredentials(login);
+        if(userCredentials){
+            throw ApiError.BadRequest('Этот email уже привязан к учетной записи');
+        }
         let id_employee = (await dbService.newEmployee(paylaod)).id_employee;
-        let login = 'unk'+id_employee;
-        let password = '12345';
+        let password = passfather();
         const hashedPassword = await bcrypt.hash(password, 3);
         await dbService.registerEmployee(login, hashedPassword, id_employee, ['user'], paylaod.email);
+        mailService.sendCred(paylaod.email, login, password);
     }
     async login(login, password){
         const userCredentials = await dbService.getCredentials(login);

@@ -30,7 +30,6 @@ export default {
   created() {
     this.timer = setInterval(async () => {
       if (await this.$store.dispatch('notifications/loadNewNotificationsNoId', this.currnentType)) {
-        this.notifications = this.$store.getters['notifications/getNotificationsByTypeId'](this.currnentType);
         await this.$store.dispatch('notificationTypes/loadUnreactedCount')
       }
     }, 5000);

@@ -26,8 +26,7 @@ export default {
     }
   },
   async beforeCreate() {
-    await this.$store.dispatch('notificationTypes/loadNotificationTypes');
-    await this.$store.dispatch('notificationTypes/loadUnreactedCount')
+    await this.$store.dispatch('notificationTypes/loadUnreactedCount');
   },
   methods: {
     changeType(index) {

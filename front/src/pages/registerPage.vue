@@ -1,7 +1,11 @@
 <template>
     <div class="registerPage">
+        <div class="label">
+            <h1>Регистация новых сотрудников</h1>
+        </div>
         <div class="container">
             <div class="registerForm">
+                <button class="back" @click="mainPage">На страницу приложения</button>
                 <label>
                     Отдел:
                     <select name="departmentSelection" v-model="department">
@@ -37,15 +41,19 @@
                 <button class="send" @click="send">Отправить</button>
             </div>
         </div>
-
+        <newNotificationsListComponent />
 
 
     </div>
 </template>
 
 <script>
+import newNotificationsListComponent from '@/components/newNotificationsListComponent.vue';
 export default {
     name: 'registerPage',
+    components: {
+        newNotificationsListComponent
+    },
     data() {
         return {
             firstName: null,
@@ -53,7 +61,8 @@ export default {
             thridName: null,
             position: null,
             department: null,
-            email: null
+            email: null,
+            timer: null
         }
     },
     methods: {
@@ -65,8 +74,20 @@ export default {
             } catch (e) {
                 console.log(e);
             }
-
+        },
+        mainPage(){
+            this.$router.push({name: "mainPage"});
         }
+    },
+    created() {
+        this.timer = setInterval(async () => {
+            if (await this.$store.dispatch('notifications/loadNewNotificationsNoId', this.currnentType)) {
+                await this.$store.dispatch('notificationTypes/loadUnreactedCount')
+            }
+        }, 5000);
+    },
+    beforeUnmount() {
+        clearInterval(this.timer)
     }
 }
 </script>
@@ -81,7 +102,7 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    padding-top: 300px;
+    padding-top: 200px;
 }
 
 .registerForm {
@@ -96,5 +117,15 @@ label {
     border-radius: 8px;
     padding: 10px;
     margin: 3px;
+}
+h1{
+    margin: 0;
+    
+}
+.label{
+    text-align: center;
+    background-color: #c7c7c7;
+    border-radius: 10px;
+    padding: 10px;
 }
 </style>

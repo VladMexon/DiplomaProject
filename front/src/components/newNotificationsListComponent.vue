@@ -1,13 +1,13 @@
 <template>
     <div class="newNotifListContainer">
-        <newNotificationNotificationComponent v-for="(notification, index) in this.$store.getters['notifications/getNewNotifications']" v-bind:key="index"
+        <newNotificationNotificationComponent
+            v-for="(notification, index) in this.$store.getters['notifications/getNewNotifications']" v-bind:key="index"
             :header="notification.notification_header" :text="notification.notification_text"
             :typeName="$store.getters['notificationTypes/getTypeNameById'](notification.id_notification_type)"
             :senderName="$store.getters['employees/getEmployeeNameById'](notification.id_sender)"
-            :sendTime="notification.time"
-            :id_sended="notification.id_sended" @closeModal="closeModal"
+            :sendTime="notification.time" :id_sended="notification.id_sended" @closeModal="closeModal"
             :buttons="$store.getters['notifications/getButtonsByNotifId'](notification.id_notification)"
-            :reacted="notification.is_reacted"/>
+            :reacted="notification.is_reacted" />
     </div>
 </template>
 
@@ -20,11 +20,14 @@ export default {
     },
     data() {
         return {
-            notifications: []
+            notifications: [],
         }
     },
+    async beforeCreate(){
+        await this.$store.dispatch('notifications/getLastId', this.typeId);
+    },
     methods: {
-        closeModal(id_sended){
+        closeModal(id_sended) {
             this.$store.commit('notifications/REMOVE_NOTIFICATION_NOTIFICATION', id_sended);
         }
     }
@@ -36,7 +39,7 @@ export default {
 .newNotifListContainer {
     right: 0;
     bottom: 0;
-    width:auto;
+    width: auto;
     position: absolute;
     margin-right: 10px;
 }

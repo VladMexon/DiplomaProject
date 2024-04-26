@@ -162,6 +162,16 @@ export default {
       } catch (e) {
         console.log(e);
       }
-    }
+    },
+    async getLastId({ commit, getters }) {
+      if (getters.getLastId == 0) {
+        try {
+          const response = await api.notification.getLastId();
+          commit('SET_LASTID', response.data);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    },
   }
 }
