@@ -126,6 +126,16 @@ class dataController {
             next(e);
         }
     }
+    async getSendedNotifications(req, res, next){
+        try{
+            const idEmployee = res.locals.user.id_employee;
+            const id_notificaiton = req.body.id_notificaiton;
+            const result = await notificationService.getSendedNotifications(idEmployee, id_notificaiton);
+            res.json(result);
+        }catch(e){
+            next(e);
+        }
+    }
 }
 
 module.exports = new dataController();

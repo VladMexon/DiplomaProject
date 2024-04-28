@@ -207,6 +207,13 @@ class authService{
         });
     }
 
+    async getSendedNotificationsBySenderId(id_sender, id_notification){
+        return db.manyOrNone({
+            name: 'getSendedNotificationsBySenderId',
+            text: 'SELECT sn.id_notification, n.notification_text, n.notification_header, string_agg(CONCAT(CAST(sn.id_recipient as text), \'=\', CAST(sn.is_reacted as text)) , \',\') as recipients_data FROM system.sended_notifications AS sn JOIN system.notifications AS n ON n.id_notification = sn.id_notification WHERE id_sender = $1 AND sn.id_notification < $2 GROUP BY sn.id_notification, n.notification_text, n.notification_header ORDER BY sn.id_notification DESC LIMIT 20',
+            values: [id_sender, id_notification]
+        });
+    }
 }
 
 module.exports = new authService();

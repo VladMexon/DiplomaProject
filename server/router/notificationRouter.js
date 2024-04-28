@@ -15,6 +15,7 @@ router.post('/getNew', authMiddleware, notificationController.getNewNotification
 router.post('/send', authMiddleware, notificationController.sendNotification);
 router.post('/react', authMiddleware, notificationController.react);
 router.get('/unreactedCount', authMiddleware, notificationController.getUnreactedCount);
+router.post('/getSendedNotifications', authMiddleware, notificationController.getSendedNotifications);
 
 module.exports = router;
 

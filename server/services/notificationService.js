@@ -66,6 +66,9 @@ class notificatonService{
         }
         return result;
     }
+    async getSendedNotifications(id_sender, id_notificaiton){
+        return await dbService.getSendedNotificationsBySenderId(id_sender, id_notificaiton);
+    }
 }
 
 module.exports = new notificatonService();

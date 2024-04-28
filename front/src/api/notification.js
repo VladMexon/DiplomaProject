@@ -29,6 +29,9 @@ export default function (instance) {
     },
     react(payload) {
       return instance.post('/notification/react', payload)
+    },
+    getSendedNotifications(payload){
+      return instance.post('/notification/getSendedNotifications', payload)
     }
   }
 }
