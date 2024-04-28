@@ -6,6 +6,7 @@
         <div class="container">
             <div class="registerForm">
                 <button class="back" @click="mainPage">На страницу приложения</button>
+                <p class="error" v-if="v$.department.$error">Укажите департамент</p>
                 <label>
                     Отдел:
                     <select name="departmentSelection" v-model="department">
@@ -14,18 +15,21 @@
                             v-bind:key="index">{{ department.department_name }}</option>
                     </select>
                 </label>
+                <p class="error" v-if="v$.position.$error">Укажите должность</p>
                 <label>
                     Должность:
                     <select name="positionSelection" v-model="position">
                         <option v-bind:value="position.id_position"
                             v-for="(position, index) in $store.getters['positions/getPositions']" v-bind:key="index">{{
-                        position.position_name }}</option>
+                    position.position_name }}</option>
                     </select>
                 </label>
+                <p class="error" v-if="v$.firstName.$error">Укажите имя</p>
                 <label>
                     Имя:
                     <input type="text" placeholder="Введите имя" v-model="firstName" />
                 </label>
+                <p class="error" v-if="v$.secondName.$error">Укажите фамилию</p>
                 <label>
                     Фамилия:
                     <input type="text" placeholder="Введите фамилию" v-model="secondName" />
@@ -34,9 +38,10 @@
                     Отчество:
                     <input type="text" placeholder="Введите отчество" v-model="thridName" />
                 </label>
+                <p class="error" v-if="v$.emailValue.$error">Укажите правильную электронную почту</p>
                 <label>
                     Элктронная почта:
-                    <input type="text" placeholder="Введите электронную почту" v-model="email" />
+                    <input type="text" placeholder="Введите электронную почту" v-model="emailValue" />
                 </label>
                 <button class="send" @click="send">Отправить</button>
             </div>
@@ -49,10 +54,15 @@
 
 <script>
 import newNotificationsListComponent from '@/components/newNotificationsListComponent.vue';
+import { useVuelidate } from '@vuelidate/core'
+import { required, email } from '@vuelidate/validators'
 export default {
     name: 'registerPage',
     components: {
         newNotificationsListComponent
+    },
+    setup() {
+        return ({ v$: useVuelidate() })
     },
     data() {
         return {
@@ -61,22 +71,25 @@ export default {
             thridName: null,
             position: null,
             department: null,
-            email: null,
+            emailValue: null,
             timer: null
         }
     },
     methods: {
         async send() {
-            try {
-                let payload = { first_name: this.firstName, second_name: this.secondName, middle_name: this.thridName, id_position: this.position, id_department: this.department, email: this.email };
-                await this.$api.auth.register(payload);
-                console.log(payload);
-            } catch (e) {
-                console.log(e);
+            this.v$.$touch()
+            if (!this.v$.$error) {
+                try {
+                    let payload = { first_name: this.firstName, second_name: this.secondName, middle_name: this.thridName, id_position: this.position, id_department: this.department, email: this.emailValue };
+                    await this.$api.auth.register(payload);
+                    console.log(payload);
+                } catch (e) {
+                    console.log(e);
+                }
             }
         },
-        mainPage(){
-            this.$router.push({name: "mainPage"});
+        mainPage() {
+            this.$router.push({ name: "mainPage" });
         }
     },
     created() {
@@ -88,6 +101,13 @@ export default {
     },
     beforeUnmount() {
         clearInterval(this.timer)
+    },
+    validations: {
+        firstName: { required },
+        secondName: { required },
+        position: { required },
+        department: { required },
+        emailValue: { required, email },
     }
 }
 </script>
@@ -118,14 +138,23 @@ label {
     padding: 10px;
     margin: 3px;
 }
-h1{
+
+h1 {
     margin: 0;
-    
+
 }
-.label{
+
+.label {
     text-align: center;
     background-color: #c7c7c7;
     border-radius: 10px;
     padding: 10px;
+}
+
+.error{
+  font-size: 12px;
+  color: red;
+  margin: 0px;
+  margin-top: 5px;
 }
 </style>

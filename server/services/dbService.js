@@ -99,7 +99,7 @@ class authService{
     }
 
     async getCredentials(user_name){
-        return db.one({
+        return db.oneOrNone({
             name: 'getCredInfoByUserName',
             text: 'SELECT password, id_employee, valid, roles  FROM system.credentials WHERE user_name = $1 AND valid = true',
             values: [user_name]
@@ -117,7 +117,7 @@ class authService{
     async  getEmployee(id){
         return db.one({
             name: 'findEmployee',
-            text: 'SELECT * FROM system.employees WHERE id_employee = $1',
+            text: 'SELECT * FROM system.employees WHERE id_employee = $1 AND valid = true',
             values: [id]
         });
     }
@@ -125,7 +125,7 @@ class authService{
     async getAllEmployees(){
         return db.many({
             name: 'getAllEmployees',
-            text: 'SELECT * FROM system.employees',
+            text: 'SELECT * FROM system.employees WHERE valid = true',
             values: []
         });
     }
@@ -133,7 +133,7 @@ class authService{
     async getAllNotificationTypes(){
         return db.many({
             name: 'getAllNotificationTypes',
-            text: 'SELECT * FROM system.notification_types',
+            text: 'SELECT * FROM system.notification_types WHERE valid = true',
             values: []
         });
     }
@@ -141,7 +141,7 @@ class authService{
     async getPositions(){
         return db.many({
             name: 'getPositions',
-            text: 'SELECT * FROM system.positions',
+            text: 'SELECT * FROM system.positions WHERE valid = true',
             values: []
         });
     }
@@ -149,7 +149,7 @@ class authService{
     async getDepartmrnts(){
         return db.many({
             name: 'getDepartmrnts',
-            text: 'SELECT * FROM system.departments',
+            text: 'SELECT * FROM system.departments WHERE valid = true',
             values: []
         });
     }

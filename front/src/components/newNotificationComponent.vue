@@ -3,6 +3,10 @@
     <h3>Новое уведомление</h3>
     <button class="closeButton" @click="closeModal"><img src="../assets/close.png" width="30" height="30" /></button>
     <div class="form">
+      <p class="error" v-if="buttonNameError">Названия кнопок не могут быть пустыми</p>
+      <p class="error" v-if="headerError">Заголовок не может быть пустым</p>
+      <p class="error" v-if="recipientsError">Должны быть выбраны получатели</p>
+      <p class="error" v-if="selectedTypeError">У уведомления должен быть выбран тип</p>
       <div class="block">
         <label>
           Тип уведомления:
@@ -114,14 +118,18 @@ export default {
   data() {
     return {
       selectedType: null,
-      notificationText: null,
-      notificationHeader: null,
+      notificationText: "",
+      notificationHeader: "",
       recipientsCheckboxes: [],
       departmentsCheckboxes: [],
       positionsCheckboxes: [],
       error: false,
       numOfButtonst: 0,
-      visibleSettingsIds: []
+      visibleSettingsIds: [],
+      selectedTypeError: false,
+      headerError: false,
+      recipientsError: false,
+      buttonNameError: false
     }
   },
   methods: {
@@ -144,22 +152,45 @@ export default {
           buttons[ids[0] - 1].recipients.push(this.departmentData[ids[1]].positions[ids[2]].recipients[ids[3]].id_employee);
         }
       });
-      console.log(buttons);
-      try {
-        await this.$api.notification.sendNotification({
-          notificationHeader: this.notificationHeader,
-          notificationText: this.notificationText,
-          isDelayed: false, //for now
-          sendDate: null,
-          notificationType: this.selectedType,
-          isDrafted: false,
-          recipients,
-          buttons
-        });
-        this.$emit('closeNotificationModal');
-      } catch (e) {
-        console.log(e);
-        this.error = true;
+      this.selectedTypeError = false;
+      this.headerError = false;
+      this.recipientsError = false;
+      this.buttonNameError = false;
+      if (recipients.length == 0)
+        this.recipientsError = true;
+      if (this.notificationHeader == "")
+        this.headerError = true;
+      if (this.selectedType == null)
+        this.selectedTypeError = true;
+      buttons.forEach(button => {
+        if (button.recipients.length == 0)
+          this.recipientsError = true;
+        if (button.buttonText == "")
+          this.buttonNameError = true;
+        if (button.notificationType == null)
+          this.selectedTypeError = true;
+        if (button.notificationHeader == "")
+          this.headerError = true;
+      });
+      if (!this.recipientsError && !this.headerError && !this.selectedTypeError && !this.buttonNameError) {
+        try {
+          await this.$api.notification.sendNotification({
+            notificationHeader: this.notificationHeader,
+            notificationText: this.notificationText,
+            isDelayed: false, //for now
+            sendDate: null,
+            notificationType: this.selectedType,
+            isDrafted: false,
+            recipients,
+            buttons
+          });
+          this.$emit('closeNotificationModal');
+        } catch (e) {
+          console.log(e);
+          this.error = true;
+        }
+      } else {
+        console.log('error');
       }
     },
     addButton() {
@@ -364,13 +395,20 @@ textarea {
   margin: 3px;
 }
 
-.form{
+.form {
   height: 500px;
   overflow: auto;
 }
 
-.sendNotification{
+.sendNotification {
   width: 100%;
   height: 30px;
+}
+
+.error{
+  font-size: 12px;
+  color: red;
+  margin: 0px;
+  margin-top: 5px;
 }
 </style>
