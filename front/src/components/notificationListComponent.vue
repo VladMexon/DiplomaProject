@@ -40,15 +40,17 @@ export default {
   methods: {
     async listScroll() {
       const list = this.$refs.notifList;
-      if (list.scrollTop <= 0) {
-        console.log('Up');
-        const scrollHeightBefore = list.scrollHeight; // Запоминаем текущую высоту скролла
-        if (await this.$store.dispatch('notifications/loadPrevNotifications', this.typeId)) {
-          this.$nextTick(() => {
-            const scrollHeightAfter = list.scrollHeight; // Получаем новую высоту скролла после подгрузки
-            const scrollDifference = scrollHeightAfter - scrollHeightBefore; // Вычисляем разницу
-            list.scrollTop = scrollDifference; // Устанавливаем скролл так, чтобы пользователь остался на том же месте
-          });
+      if (list) {
+        if (list.scrollTop <= 0) {
+          console.log('Up');
+          const scrollHeightBefore = list.scrollHeight; // Запоминаем текущую высоту скролла
+          if (await this.$store.dispatch('notifications/loadPrevNotifications', this.typeId)) {
+            this.$nextTick(() => {
+              const scrollHeightAfter = list.scrollHeight; // Получаем новую высоту скролла после подгрузки
+              const scrollDifference = scrollHeightAfter - scrollHeightBefore; // Вычисляем разницу
+              list.scrollTop = scrollDifference; // Устанавливаем скролл так, чтобы пользователь остался на том же месте
+            });
+          }
         }
       }
     }
