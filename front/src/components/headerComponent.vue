@@ -2,7 +2,7 @@
   <div class="header">
     <div class="logo">
       <img alt="logo" src="../assets/logo.webp">
-      <a>Система оповещения</a>
+      <a href="/app">Система оповещения</a>
     </div>
     <div class="name" v-if="userName">
       <p>{{ userName }}</p>
@@ -113,5 +113,10 @@ export default {
   height: 30px;
   border: 0;
   background: none;
+}
+
+a {
+  text-decoration: none;
+  border: none;
 }
 </style>

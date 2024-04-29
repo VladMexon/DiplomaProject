@@ -67,7 +67,12 @@ class notificatonService{
         return result;
     }
     async getSendedNotifications(id_sender, id_notificaiton){
-        return await dbService.getSendedNotificationsBySenderId(id_sender, id_notificaiton);
+        if(id_notificaiton != '0'){
+            return await dbService.getSendedNotificationsBySenderId(id_sender, id_notificaiton);
+        }else{
+            return await dbService.getSendedNotificationsBySenderIdNoNotifId(id_sender);
+        }
+        
     }
 }
 

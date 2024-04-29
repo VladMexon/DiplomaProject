@@ -15,9 +15,25 @@ export default {
     },
     mutations: {
         SET_DATA(state, payload) {
-            state.data = payload
+            for(let i = 0; i < payload.length; i++){
+                let newRecipientsDataPart = [];
+                payload[i].recipients_data.split(',').forEach(rec_data => {
+                    let temp = rec_data.split('=');
+                    newRecipientsDataPart.push({employee: temp[0], state: temp[1]==='true'});
+                })
+                payload[i].recipients_data = newRecipientsDataPart;
+            }
+            state.data = payload;
         },
         ADD_DATA(state, payload) {
+            for(let i = 0; i < payload.length; i++){
+                let newRecipientsDataPart = [];
+                payload[i].recipients_data.split(',').forEach(rec_data => {
+                    let temp = rec_data.split('=');
+                    newRecipientsDataPart.push({employee: temp[0], state: temp[1]==='true'});
+                })
+                payload[i].recipients_data = newRecipientsDataPart;
+            }
             state.data.push(...payload);
         },
         SET_LAST_ID(state, payload) {
@@ -27,11 +43,11 @@ export default {
     actions: {
         async initData({ commit }) {
             try {
-                const data = (await api.notification.getSendedNotifications(0)).data;
+                const data = (await api.notification.getSendedNotifications({id_notificaiton:0})).data;
                 if(data.length > 0){
                     const last_id = data[data.length - 1].id_notification;
-                    commit(SET_DATA, data);
-                    commit(SET_LAST_ID, last_id)
+                    commit('SET_DATA', data);
+                    commit('SET_LAST_ID', last_id)
                 }
             } catch (e) {
                 console.log(e);
@@ -39,12 +55,14 @@ export default {
         },
         async  getPrevData({ commit, getters }){
             try {
-                const data = (await api.notification.getSendedNotifications(getters.getLastId)).data;
+                const data = (await api.notification.getSendedNotifications({id_notificaiton:getters.getLastId})).data;
                 if(data.length > 0){
                     const last_id = data[data.length - 1].id_notification;
-                    commit(ADD_DATA, data);
-                    commit(SET_LAST_ID, last_id)
+                    commit('ADD_DATA', data);
+                    commit('SET_LAST_ID', last_id)
+                    return true;
                 }
+                return false;
             } catch (e) {
                 console.log(e);
             }
