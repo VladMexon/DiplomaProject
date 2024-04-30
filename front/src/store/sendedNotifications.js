@@ -19,7 +19,8 @@ export default {
                 let newRecipientsDataPart = [];
                 payload[i].recipients_data.split(',').forEach(rec_data => {
                     let temp = rec_data.split('=');
-                    newRecipientsDataPart.push({employee: temp[0], state: temp[1]==='true'});
+                    let temp2 = temp[1].split('|');
+                    newRecipientsDataPart.push({employee: temp[0], state: temp2[0]==='true', react_time:temp2[1]});
                 })
                 payload[i].recipients_data = newRecipientsDataPart;
             }
@@ -30,7 +31,8 @@ export default {
                 let newRecipientsDataPart = [];
                 payload[i].recipients_data.split(',').forEach(rec_data => {
                     let temp = rec_data.split('=');
-                    newRecipientsDataPart.push({employee: temp[0], state: temp[1]==='true'});
+                    let temp2 = temp[1].split('|');
+                    newRecipientsDataPart.push({employee: temp[0], state: temp2[0]==='true', react_time:temp2[1]});
                 })
                 payload[i].recipients_data = newRecipientsDataPart;
             }

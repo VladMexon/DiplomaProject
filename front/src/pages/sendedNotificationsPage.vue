@@ -6,6 +6,7 @@
                 v-bind:key="indexN">
                 <p class="notificationHeader">Заголовок: {{ notification.notification_header }}</p>
                 <p class="notificationText">Текст: {{ notification.notification_text }}</p>
+                <p class="notificationSendTime">Время отправки: {{ new Date(notification.send_time).toString() }}</p>
                 <button class="showDataButton" @click="showData(indexN)">Показать/Скрыть информацию о
                     получателях</button>
                 <div class="recipientsData" v-if="showContentList.includes(indexN)">
@@ -13,7 +14,7 @@
             this.$store.getters['employees/getEmployeeNameById'](recipient.employee) }} <span
                             class="reacted" v-if="recipient.state">Отреагировал</span><span class="notReacted"
                             v-if="!recipient.state"> Не
-                            отреагировал</span> </p>
+                            отреагировал</span> <span v-if="recipient.react_time">через {{ Math.round(((new Date(recipient.react_time)) - (new Date(notification.send_time))) / (60*1000))}}мин. полсе получения</span></p>
                 </div>
             </div>
         </div>

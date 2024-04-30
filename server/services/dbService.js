@@ -179,7 +179,7 @@ class authService{
     async setReacted(id_sended){
         return db.none({
             name: 'setReacted',
-            text: 'UPDATE system.sended_notifications SET is_reacted = true WHERE id_sended = $1',
+            text: 'UPDATE system.sended_notifications SET is_reacted = true, react_time = NOW() WHERE id_sended = $1',
             values: [id_sended]
         });
     }
@@ -210,14 +210,14 @@ class authService{
     async getSendedNotificationsBySenderId(id_sender, id_notification){
         return db.manyOrNone({
             name: 'getSendedNotificationsBySenderId',
-            text: 'SELECT sn.id_notification, n.notification_text, n.notification_header, string_agg(CONCAT(CAST(sn.id_recipient as text), \'=\', CAST(sn.is_reacted as text)) , \',\') as recipients_data FROM system.sended_notifications AS sn JOIN system.notifications AS n ON n.id_notification = sn.id_notification WHERE id_sender = $1 AND sn.id_notification < $2 GROUP BY sn.id_notification, n.notification_text, n.notification_header ORDER BY sn.id_notification DESC LIMIT 20',
+            text: 'SELECT sn.id_notification, n.notification_text, n.notification_header, string_agg(CONCAT(CAST(sn.id_recipient as text), \'=\', CAST(sn.is_reacted as text), \'|\', CAST(sn.react_time as text)) , \',\') as recipients_data, max(time) as send_time FROM system.sended_notifications AS sn JOIN system.notifications AS n ON n.id_notification = sn.id_notification WHERE id_sender = $1 AND sn.id_notification < $2 GROUP BY sn.id_notification, n.notification_text, n.notification_header ORDER BY sn.id_notification DESC LIMIT 20',
             values: [id_sender, id_notification]
         });
     }
     async getSendedNotificationsBySenderIdNoNotifId(id_sender){
         return db.manyOrNone({
             name: 'getSendedNotificationsBySenderIdNoNotifId',
-            text: 'SELECT sn.id_notification, n.notification_text, n.notification_header, string_agg(CONCAT(CAST(sn.id_recipient as text), \'=\', CAST(sn.is_reacted as text)) , \',\') as recipients_data FROM system.sended_notifications AS sn JOIN system.notifications AS n ON n.id_notification = sn.id_notification WHERE id_sender = $1 GROUP BY sn.id_notification, n.notification_text, n.notification_header ORDER BY sn.id_notification DESC LIMIT 20',
+            text: 'SELECT sn.id_notification, n.notification_text, n.notification_header, string_agg(CONCAT(CAST(sn.id_recipient as text), \'=\', CAST(sn.is_reacted as text), \'|\', CAST(sn.react_time as text)) , \',\') as recipients_data, max(time) as send_time FROM system.sended_notifications AS sn JOIN system.notifications AS n ON n.id_notification = sn.id_notification WHERE id_sender = $1 GROUP BY sn.id_notification, n.notification_text, n.notification_header ORDER BY sn.id_notification DESC LIMIT 20',
             values: [id_sender]
         });
     }
