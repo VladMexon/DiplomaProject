@@ -43,6 +43,7 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout');
       this.$store.commit('notifications/CLEAR_NOTIFICATIONS');
+      this.$store.commit('commentsStore/CLEAR');
       this.$router.push({ name: "loginPage" });
       this.openModal()
     },
