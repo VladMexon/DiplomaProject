@@ -9,6 +9,9 @@ export default {
     lastId: 0
   },
   getters: {
+    getNotificationsIds(state){
+      return state.notifications.map(notification=>notification.id_notification);
+    },
     getButtons(state) {
       return state.buttons
     },

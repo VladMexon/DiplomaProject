@@ -11,7 +11,8 @@
         :senderName="$store.getters['employees/getEmployeeNameById'](notification.id_sender)"
         :sendTime="new Date(notification.time).toString()"
         :buttons="$store.getters['notifications/getButtonsByNotifId'](notification.id_notification)"
-        :reacted="notification.is_reacted" :id_sended="notification.id_sended" />
+        :reacted="notification.is_reacted" :id_sended="notification.id_sended"
+        :id_notification="notification.id_notification" />
     </div>
   </div>
 </template>
@@ -26,6 +27,7 @@ export default {
   props: ['typeId'],
   async beforeCreate() {
     await this.$store.dispatch('notifications/initNotifications', this.typeId);
+    await this.$store.dispatch('commentsStore/getCommentsCount', {notification_ids:this.$store.getters['notifications/getNotificationsIds']});
     this.$nextTick(() => {
       try {
         const list = this.$refs.notifList;

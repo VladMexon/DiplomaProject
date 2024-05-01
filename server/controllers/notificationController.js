@@ -136,6 +136,49 @@ class dataController {
             next(e);
         }
     }
+    async getComments(req, res, next){
+        try{
+            const id_notification = req.body.id_notification;
+            const result = await notificationService.getComments(id_notification);
+            res.json(result);
+        }catch(e){
+            next(e);
+        }
+    }
+    async getCommentsCount(req, res, next){
+        try{
+            const notification_ids = req.body.notification_ids;
+            const result = await notificationService.getCommentsCount(notification_ids);
+            res.json(result);
+        }catch(e){
+            next(e);
+        }
+    }
+    async newComment(req, res, next){
+        try{
+            const id_notification = req.body.id_notification;
+            const text = req.body.text;
+            const id_author = res.locals.user.id_employee;
+            const result = await notificationService.newComment(id_notification, text, id_author);
+            res.json(result);
+        }catch(e){
+            next(e);
+        }
+    }
+    async getNewComments(req, res, next){
+        try{
+            const last_id = req.body.last_id;
+            const commentIds = req.body.commentIds;
+            if(commentIds.length != 0){
+                const result = await notificationService.getNewComments(last_id, commentIds);
+                res.json(result);
+            }else{
+                res.json();
+            }
+        }catch(e){
+            next(e);
+        }
+    }
 }
 
 module.exports = new dataController();

@@ -221,6 +221,30 @@ class authService{
             values: [id_sender]
         });
     }
+    async getNewComments(id_comment, ids){
+        return db.manyOrNone(
+            'SELECT * FROM system.notification_comments WHERE id_comment > $1 AND id_notification IN ($2:csv) ORDER BY id_comment ASC', [id_comment, ids]
+        );
+    }
+    async getCommentsCount(ids){
+        return db.manyOrNone(
+            'SELECT id_notification, COUNT(*) as comments_count FROM system.notification_comments WHERE id_notification IN ($1:csv) GROUP BY id_notification ORDER BY id_notification ASC', [ids]
+        );
+    }
+    async getComments(id_notification){
+        return db.manyOrNone({
+            name: 'getComments',
+            text: 'SELECT * FROM system.notification_comments WHERE id_notification = $1 ORDER BY id_comment ASC',
+            values: [id_notification]
+        });
+    }
+    async newComment(id_notification, text, id_author){
+        return db.one({
+            name: 'newComment',
+            text: 'INSERT INTO system.notification_comments(id_notification, text, id_author) VALUES($1, $2, $3) RETURNING id_comment',
+            values: [id_notification, text, id_author]
+        });
+    }
 }
 
 module.exports = new authService();

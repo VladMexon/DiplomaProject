@@ -32,6 +32,8 @@ export default {
       if (await this.$store.dispatch('notifications/loadNewNotificationsNoId', this.currnentType)) {
         await this.$store.dispatch('notificationTypes/loadUnreactedCount')
       }
+      await this.$store.dispatch('commentsStore/getCommentsCount', {notification_ids:this.$store.getters['notifications/getNotificationsIds']});
+      await this.$store.dispatch('commentsStore/getNewComments');
     }, 5000);
   },
   methods: {

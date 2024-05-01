@@ -74,6 +74,18 @@ class notificatonService{
         }
         
     }
+    async getNewComments(id_comment, commentIds){
+        return await dbService.getNewComments(id_comment, commentIds);
+    }
+    async getCommentsCount(commentIds){
+        return await dbService.getCommentsCount(commentIds);
+    }
+    async getComments(id_notification){
+        return await dbService.getComments(id_notification);
+    }
+    async newComment(id_notification, text, id_author){
+        return await dbService.newComment(id_notification, text, id_author);
+    }
 }
 
 module.exports = new notificatonService();

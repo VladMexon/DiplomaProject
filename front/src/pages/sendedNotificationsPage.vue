@@ -14,7 +14,7 @@
             this.$store.getters['employees/getEmployeeNameById'](recipient.employee) }} <span
                             class="reacted" v-if="recipient.state">Отреагировал</span><span class="notReacted"
                             v-if="!recipient.state"> Не
-                            отреагировал</span> <span v-if="recipient.react_time">через {{ Math.round(((new Date(recipient.react_time)) - (new Date(notification.send_time))) / (60*1000))}}мин. полсе получения</span></p>
+                            отреагировал</span> <span v-if="recipient.react_time">через {{ Math.round(((new Date(recipient.react_time)) - (new Date(notification.send_time))) / (60*1000))}}мин. с момента отправки</span></p>
                 </div>
             </div>
         </div>

@@ -32,6 +32,19 @@ export default function (instance) {
     },
     getSendedNotifications(payload){
       return instance.post('/notification/getSendedNotifications', payload)
-    }
+    },
+    getComments(payload){
+      return instance.post('/notification/getComments', payload)
+    },
+    getCommentsCount(payload){
+      return instance.post('/notification/getCommentsCount', payload)
+    },
+    newComment(payload){
+      return instance.post('/notification/newComment', payload)
+    },
+    getNewComments(payload){
+      return instance.post('/notification/getNewComments', payload)
+    },
   }
 }
+

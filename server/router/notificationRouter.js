@@ -16,6 +16,10 @@ router.post('/send', authMiddleware, notificationController.sendNotification);
 router.post('/react', authMiddleware, notificationController.react);
 router.get('/unreactedCount', authMiddleware, notificationController.getUnreactedCount);
 router.post('/getSendedNotifications', authMiddleware, notificationController.getSendedNotifications);
+router.post('/getComments', authMiddleware, notificationController.getComments);
+router.post('/getCommentsCount', authMiddleware, notificationController.getCommentsCount);
+router.post('/newComment', authMiddleware, notificationController.newComment);
+router.post('/getNewComments', authMiddleware, notificationController.getNewComments);
 
 module.exports = router;
 

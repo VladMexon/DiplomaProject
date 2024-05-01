@@ -6,9 +6,24 @@
     <p>Тип: {{ typeName }}</p>
     <p>Время отправки: {{ sendTime }}</p>
     <div class="reactionButtons" v-if="!reacted">
-      <button v-for="(button, indexB) in buttons" @click="react(id_sended, button.id_send_notification)"
+      <button class="reactButton" v-for="(button, indexB) in buttons" @click="react(id_sended, button.id_send_notification)"
         v-bind:key="indexB">{{ button.button_text }}</button>
-      <button @click="react(id_sended, null)" v-if="buttons.length == 0">Прочитано</button>
+      <button class="reactButton" @click="react(id_sended, null)" v-if="buttons.length == 0">Прочитано</button>
+    </div>
+    <div class="comments">
+      <div class="commentsHeader"><span>Комментарии ({{this.$store.getters['commentsStore/getCommentsCountById'](id_notification)}})</span><button @click="showComments()">Показать</button></div>
+      <div class="commentsContainer" v-if="this.$store.getters['commentsStore/getUpdateIds'].includes(this.id_notification)">
+        <div class="commentList">
+          <div class="comment" v-for="(comment, indexC) in this.$store.getters['commentsStore/getCommentsByNotifId'](id_notification)" :key="indexC">
+            <p>{{ comment.text }}</p>
+            <p>{{ this.$store.getters['employees/getEmployeeNameById'](comment.id_author)}}</p>
+            <p>{{ new Date(comment.time).toString() }}</p>
+          </div>
+        </div>
+        <div class="controls">
+          <textarea v-model="commentText" placeholder="Введите комментарий"></textarea><button class="commentSend" @click="send()">Отправить</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -17,11 +32,28 @@
 <script>
 export default {
   name: 'notificationComponent',
-  props: ['header', 'text', 'typeName', 'senderName', 'sendTime', 'buttons', 'reacted', 'id_sended'],
+  props: ['header', 'text', 'typeName', 'senderName', 'sendTime', 'buttons', 'reacted', 'id_sended', 'id_notification'],
+  data(){
+    return{
+      commentText: ''
+    }
+  },
   methods: {
     async react(id_sended, id_send_notification) {
       await this.$store.dispatch('notifications/react', { id_sended, id_send_notification });
       await this.$store.dispatch('notificationTypes/loadUnreactedCount');
+    },
+    async showComments(){
+      if(!this.$store.getters['commentsStore/getUpdateIds'].includes(this.id_notification)){
+        await this.$store.dispatch('commentsStore/getComments', {id_notification: this.id_notification});
+        this.$store.commit('commentsStore/ADD_UPDATE_ID', this.id_notification);
+      }else{
+        this.$store.commit('commentsStore/DELETE_UPDATE_ID', this.id_notification);
+      }
+    },
+    async send(){
+      await this.$store.dispatch('commentsStore/sendComment', { id_notification: this.id_notification, text: this.commentText, id_author: this.$store.getters['user/getUser'].id_employee});
+      this.commentText = '';
     }
   }
 }
@@ -58,7 +90,7 @@ p {
   margin: 3px;
 }
 
-button {
+.reactButton {
   margin: 5px;
   height: 40px;
   width: 100%;
@@ -69,11 +101,58 @@ button {
 
 }
 
-button:hover {
+.reactButton:hover {
   background-color: rgb(207, 207, 207);
 }
 
-button:active {
+.reactButton:active {
   background-color: rgb(189, 189, 189);
+}
+
+.commentsHeader{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #b6b6b6;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
+}
+
+.controls{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #b6b6b6;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
+}
+
+.commentList{
+  background-color: #b6b6b6;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
+  height: 300px;
+  overflow: auto;
+}
+.comments{
+  background-color: #a5a4a4;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
+}
+textarea{
+  width: 100%;
+}
+
+.comment{
+  background-color: #a5a4a4;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
 }
 </style>
