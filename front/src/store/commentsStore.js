@@ -73,7 +73,7 @@ export default {
             try {
                 const response = await api.notification.getNewComments({last_id: getters.getLastId, commentIds: getters.getUpdateIds});
                 if(response.data.length > 0){
-                    commit('SET_LAST_ID', response.data[0].id_comment);
+                    commit('SET_LAST_ID', response.data[response.data.length - 1].id_comment);
                     commit('ADD_COMMENTS', response.data);
                 }
             } catch (e) {
