@@ -12,8 +12,8 @@
                 <div class="recipientsData" v-if="showContentList.includes(indexN)">
                     <p v-for="(recipient, indexR) in notification.recipients_data" v-bind:key="indexR"> {{
             this.$store.getters['employees/getEmployeeNameById'](recipient.employee) }} <span
-                            class="reacted" v-if="recipient.state">Отреагировал</span><span class="notReacted"
-                            v-if="!recipient.state"> Не
+                            class="reacted" v-if="recipient.state">oтреагировал</span><span class="notReacted"
+                            v-if="!recipient.state"> не
                             отреагировал</span> <span v-if="recipient.react_time">через {{ Math.round(((new Date(recipient.react_time)) - (new Date(notification.send_time))) / (60*1000))}}мин. с момента отправки</span></p>
                 </div>
             </div>

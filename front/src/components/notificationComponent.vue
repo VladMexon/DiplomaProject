@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h3>{{ header }}</h3>
-    <p>{{ text }}</p>
+    <p v-if="text">{{ text }}</p>
     <p>Отправитель: {{ senderName }}</p>
     <p>Тип: {{ typeName }}</p>
     <p>Время отправки: {{ sendTime }}</p>
