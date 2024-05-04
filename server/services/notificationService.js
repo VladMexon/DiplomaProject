@@ -86,6 +86,9 @@ class notificatonService{
     async newComment(id_notification, text, id_author){
         return await dbService.newComment(id_notification, text, id_author);
     }
+    async getSendedNotificationsBySenderIds(id_sender, ids){
+        return await dbService.getSendedNotificationsBySenderIds(id_sender, ids);
+    }
 }
 
 module.exports = new notificatonService();

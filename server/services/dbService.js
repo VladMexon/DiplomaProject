@@ -221,6 +221,11 @@ class authService{
             values: [id_sender]
         });
     }
+    async getSendedNotificationsBySenderIds(id_sender, ids){
+        return db.manyOrNone(
+            'SELECT sn.id_notification, n.notification_text, n.notification_header, string_agg(CONCAT(CAST(sn.id_recipient as text), \'=\', CAST(sn.is_reacted as text), \'|\', CAST(sn.react_time as text)) , \',\') as recipients_data, max(time) as send_time FROM system.sended_notifications AS sn JOIN system.notifications AS n ON n.id_notification = sn.id_notification WHERE id_sender = $1 AND sn.id_notification IN ($2:csv) GROUP BY sn.id_notification, n.notification_text, n.notification_header ORDER BY sn.id_notification DESC LIMIT 20', [id_sender, ids]
+        );
+    }
     async getNewComments(id_comment, ids){
         return db.manyOrNone(
             'SELECT * FROM system.notification_comments WHERE id_comment > $1 AND id_notification IN ($2:csv) ORDER BY id_comment ASC', [id_comment, ids]

@@ -20,6 +20,7 @@ router.post('/getComments', authMiddleware, notificationController.getComments);
 router.post('/getCommentsCount', authMiddleware, notificationController.getCommentsCount);
 router.post('/newComment', authMiddleware, notificationController.newComment);
 router.post('/getNewComments', authMiddleware, notificationController.getNewComments);
+router.post('/updateSended', authMiddleware, notificationController.getSendedNotificationsBySenderIds);
 
 module.exports = router;
 

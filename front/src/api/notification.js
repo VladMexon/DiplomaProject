@@ -45,6 +45,9 @@ export default function (instance) {
     getNewComments(payload){
       return instance.post('/notification/getNewComments', payload)
     },
+    getSendedNotificationsBySenderIds(payload){
+      return instance.post('/notification/updateSended', payload)
+    }
   }
 }
 

@@ -11,6 +11,9 @@ export default {
         },
         getLastId(state) {
             return state.last_id;
+        },
+        getUpdateIds(state){
+            return state.data.map(notification => notification.id_notification);
         }
     },
     mutations: {
@@ -28,6 +31,9 @@ export default {
         },
         ADD_DATA(state, payload) {
             for(let i = 0; i < payload.length; i++){
+                if(state.data.map(notification => notification.id_notification).includes(payload[i].id_notification)){
+                    state.data = state.data.filter(notification => notification.id_notification !== payload[i].id_notification);
+                }
                 let newRecipientsDataPart = [];
                 payload[i].recipients_data.split(',').forEach(rec_data => {
                     let temp = rec_data.split('=');
@@ -68,6 +74,15 @@ export default {
             } catch (e) {
                 console.log(e);
             }
+        },
+        async getUpdateData({commit, getters}){
+            try{
+                const data = (await api.notification.getSendedNotificationsBySenderIds({ids: getters.getUpdateIds})).data;
+                commit('ADD_DATA', data);
+            }catch(e){
+                console.log(e);
+            }
         }
     }
 }
+

@@ -7,6 +7,22 @@
                 <p class="notificationHeader">Заголовок: {{ notification.notification_header }}</p>
                 <p class="notificationText">Текст: {{ notification.notification_text }}</p>
                 <p class="notificationSendTime">Время отправки: {{ new Date(notification.send_time).toString() }}</p>
+                <p class="notificationSendTime">Отреагировали: {{ notification.recipients_data.reduce((acc, curr) => acc + (curr.state ? 1 : 0), 0) }}/{{ notification.recipients_data.length }}</p>
+                <div class="comments">
+      <div class="commentsHeader"><span>Комментарии ({{this.$store.getters['commentsStore/getCommentsCountById'](notification.id_notification)}})</span><button @click="showComments(notification.id_notification)">Показать</button></div>
+      <div class="commentsContainer" v-if="this.$store.getters['commentsStore/getUpdateIds'].includes(notification.id_notification)">
+        <div class="commentList">
+          <div class="comment" v-for="(comment, indexC) in this.$store.getters['commentsStore/getCommentsByNotifId'](notification.id_notification)" :key="indexC">
+            <p>{{ comment.text }}</p>
+            <p>{{ this.$store.getters['employees/getEmployeeNameById'](comment.id_author)}}</p>
+            <p>{{ new Date(comment.time).toString() }}</p>
+          </div>
+        </div>
+        <div class="controls">
+          <textarea v-model="commentText" placeholder="Введите комментарий"></textarea><button class="commentSend" @click="send(notification.id_notification)">Отправить</button>
+        </div>
+      </div>
+    </div>
                 <button class="showDataButton" @click="showData(indexN)">Показать/Скрыть информацию о
                     получателях</button>
                 <div class="recipientsData" v-if="showContentList.includes(indexN)">
@@ -32,7 +48,8 @@ export default {
     data() {
         return {
             timer: null,
-            showContentList: []
+            showContentList: [],
+            commentText: '',
         }
     },
     methods: {
@@ -46,6 +63,18 @@ export default {
                 this.showContentList = this.showContentList.filter(elem => elem != indexN);
             }
         },
+        async showComments(id_notification){
+      if(!this.$store.getters['commentsStore/getUpdateIds'].includes(id_notification)){
+        await this.$store.dispatch('commentsStore/getComments', {id_notification: id_notification});
+        this.$store.commit('commentsStore/ADD_UPDATE_ID', id_notification);
+      }else{
+        this.$store.commit('commentsStore/DELETE_UPDATE_ID', id_notification);
+      }
+    },
+    async send(id_notification){
+      await this.$store.dispatch('commentsStore/sendComment', { id_notification: id_notification, text: this.commentText, id_author: this.$store.getters['user/getUser'].id_employee});
+      this.commentText = '';
+    },
         async listScroll() {
             const list = this.$refs.notifList;
             if (list) {
@@ -69,6 +98,9 @@ export default {
             if (await this.$store.dispatch('notifications/loadNewNotificationsNoId', this.currnentType)) {
                 await this.$store.dispatch('notificationTypes/loadUnreactedCount')
             }
+            await this.$store.dispatch('sendedNotifications/getUpdateData');
+            await this.$store.dispatch('commentsStore/getCommentsCount', {notification_ids:this.$store.getters['sendedNotifications/getUpdateIds']});
+      await this.$store.dispatch('commentsStore/getNewComments');
         }, 5000);
     },
     beforeUnmount() {
@@ -117,5 +149,52 @@ p {
     padding: 5px;
     border-radius: 5px;
     margin: 3px;
+}
+
+.commentsHeader{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #b6b6b6;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
+}
+
+.controls{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #b6b6b6;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
+}
+
+.commentList{
+  background-color: #b6b6b6;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
+  height: 300px;
+  overflow: auto;
+}
+.comments{
+  background-color: #a5a4a4;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
+}
+textarea{
+  width: 100%;
+}
+
+.comment{
+  background-color: #a5a4a4;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
 }
 </style>
