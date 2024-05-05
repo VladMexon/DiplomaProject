@@ -39,7 +39,8 @@ export default {
 .newNotifListContainer {
     right: 0;
     bottom: 0;
-    width: auto;
+    width: 70%;
+    max-width: 400px;
     position: absolute;
     margin-right: 10px;
 }

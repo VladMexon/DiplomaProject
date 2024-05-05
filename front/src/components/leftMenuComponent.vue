@@ -44,9 +44,9 @@ export default {
     }
   }
 }
-</script>
+</script scoped>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style scoped>
 .left-menu {
   border-right: solid;
@@ -101,9 +101,13 @@ span{
 }
 
 .newNotification{
-  font-size: 15px;
-  color: red;
-  margin: 0px;
-  margin-top: 5px;
+  font-size: 11px;
+  background-color: rgb(255, 72, 72);
+  margin-right: 5px;
+  border-radius: 10px;
+  height: 11px;
+  width: 11px;
+  
 }
 </style>
+

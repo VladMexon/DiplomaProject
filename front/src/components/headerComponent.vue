@@ -1,7 +1,8 @@
 <template>
   <div class="header">
     <div class="logo">
-      <img alt="logo" src="../assets/logo.webp">
+      <img alt="logo" src="../assets/logo.webp" v-if="!detectMob()">
+      <button @click="leftMenuVisible" v-if="detectMob()" class="menuButton"> <img alt="menu" src="../assets/menu.png"> </button>
       <a href="/app">Система оповещения</a>
     </div>
     <div class="name" v-if="userName">
@@ -49,6 +50,12 @@ export default {
     },
     openModal() {
       this.isModalOpen = !this.isModalOpen;
+    },
+    detectMob() {
+      return ((window.innerWidth <= 800));
+    },
+    leftMenuVisible() {
+      return this.$store.commit('leftMenu/SET_VISIBLE');
     }
   }
 }
@@ -64,6 +71,7 @@ export default {
   border-bottom: solid;
   justify-content: space-between;
   height: 50px;
+  width: 100%;
 }
 
 .logo {
@@ -83,7 +91,6 @@ export default {
 }
 
 .logo img {
-  margin-left: 10px;
   height: 50px;
   width: 50px;
 }
@@ -112,6 +119,14 @@ export default {
 .modalButton {
   width: 40px;
   height: 30px;
+  border: 0;
+  background: none;
+}
+
+.menuButton {
+  margin-left: 0px;
+  height: 50px;
+  width: 50px;
   border: 0;
   background: none;
 }

@@ -81,8 +81,12 @@ export default {
             if (!this.v$.$error) {
                 try {
                     let payload = { first_name: this.firstName, second_name: this.secondName, middle_name: this.thridName, id_position: this.position, id_department: this.department, email: this.emailValue };
-                    await this.$api.auth.register(payload);
-                    console.log(payload);
+                    const result = await this.$api.auth.register(payload);
+                    if(result === 'ok'){
+                        alert('Пользователь зарегистрирован');
+                    }else{
+                        alert('Этот email уже привязан к учетной записи');
+                    }
                 } catch (e) {
                     console.log(e);
                 }

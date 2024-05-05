@@ -309,7 +309,7 @@ export default {
   background-color: rgb(235, 235, 235);
   border-radius: 10px;
   padding: 30px;
-  width: 500px;
+  width: 70%;
   height: auto;
 }
 

@@ -1,8 +1,9 @@
 <template>
   <div class="container">
-    <leftMenuComponent @changeType="changeType" @newNotificationModal="openNewNotificationModal()" />
+    <leftMenuComponent @changeType="changeType" @newNotificationModal="openNewNotificationModal()" v-if="!detectMob()"/>
+    <leftMenuComponent @changeType="changeType" @newNotificationModal="openNewNotificationModal()" v-if="detectMob() && this.$store.getters['leftMenu/isVisible']" class="mobile"/>
     <notificationListComponent :typeId="currnentType" v-bind:key="currnentType" />
-    <newNotificationsListComponent/>
+    <newNotificationsListComponent />
   </div>
   <newNotificationComponent v-if="newNotificationModalOpened" @closeNotificationModal="openNewNotificationModal()" />
 </template>
@@ -32,7 +33,7 @@ export default {
       if (await this.$store.dispatch('notifications/loadNewNotificationsNoId', this.currnentType)) {
         await this.$store.dispatch('notificationTypes/loadUnreactedCount')
       }
-      await this.$store.dispatch('commentsStore/getCommentsCount', {notification_ids:this.$store.getters['notifications/getNotificationsIds']});
+      await this.$store.dispatch('commentsStore/getCommentsCount', { notification_ids: this.$store.getters['notifications/getNotificationsIds'] });
       await this.$store.dispatch('commentsStore/getNewComments');
     }, 5000);
   },
@@ -43,6 +44,9 @@ export default {
     openNewNotificationModal() {
       this.newNotificationModalOpened = !this.newNotificationModalOpened;
       console.log(this.newNotificationModalOpened);
+    },
+    detectMob() {
+      return ((window.innerWidth <= 800));
     }
   },
   beforeUnmount() {
@@ -56,5 +60,12 @@ export default {
 .container {
   display: flex;
   height: calc(100% - 53px);
+}
+
+.mobile {
+  position: absolute;
+  z-index: 100;
+  height: calc(100% - 53px);
+  background-color: #DEDEDE;
 }
 </style>

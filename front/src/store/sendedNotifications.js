@@ -13,6 +13,9 @@ export default {
             return state.last_id;
         },
         getUpdateIds(state){
+            if(state.data === null){
+                return [];
+            }
             return state.data.map(notification => notification.id_notification);
         }
     },
@@ -78,7 +81,9 @@ export default {
         async getUpdateData({commit, getters}){
             try{
                 const data = (await api.notification.getSendedNotificationsBySenderIds({ids: getters.getUpdateIds})).data;
-                commit('ADD_DATA', data);
+                if(data.length > 0){
+                    commit('ADD_DATA', data);
+                }
             }catch(e){
                 console.log(e);
             }

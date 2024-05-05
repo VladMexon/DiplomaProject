@@ -5,8 +5,12 @@ const { validationResult } = require('express-validator');
 class authController{
     async register(req, res, next){ //тут все переделать(вообще никакние токены не нужны) https://www.youtube.com/watch?v=fN25fMQZ2v0 с 37 минуты(реализовать рассылку)
         try{
-            authService.registration(req.body);
-            return res.json();
+            const result = await authService.registration(req.body);
+            if(result){
+                return res.json('ok');
+            }else{
+                return res.status(400).json('Этот email уже привязан к учетной записи');
+            }
         }catch(e){
             next(e);
         }

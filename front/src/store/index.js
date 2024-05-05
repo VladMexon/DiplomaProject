@@ -7,6 +7,7 @@ import positions from './positions'
 import notifications from './notifications'
 import sendedNotifications from './sendedNotifications'
 import commentsStore from './commentsStore'
+import leftMenu from './leftMenu'
 
 export default createStore({
   modules: { 
@@ -17,7 +18,8 @@ export default createStore({
     positions,
     notifications,
     sendedNotifications,
-    commentsStore
+    commentsStore,
+    leftMenu
   }
 })
 

@@ -183,8 +183,12 @@ class dataController {
         try{
             const id_sender = res.locals.user.id_employee;
             const ids = req.body.ids;
-            const result = await notificationService.getSendedNotificationsBySenderIds(id_sender, ids);
-            res.json(result);
+            if(ids.length != 0){
+                const result = await notificationService.getSendedNotificationsBySenderIds(id_sender, ids);
+                res.json(result);
+            }else{
+                res.json([]);
+            }
         }catch(e){
             next(e);
         }

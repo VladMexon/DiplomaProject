@@ -88,9 +88,12 @@ export default {
         },
         async getCommentsCount({ commit }, payload) {
             try {
-                const response = await api.notification.getCommentsCount(payload);
-                console.log(response.data);
-                commit('UPDATE_COMMENTS_COUNT', response.data);
+                if(payload.notification_ids.length > 0){
+                    const response = await api.notification.getCommentsCount(payload);
+                    //console.log(response.data);
+                    commit('UPDATE_COMMENTS_COUNT', response.data);
+                }  
+                
             } catch (e) {
                 console.log(e);
             }

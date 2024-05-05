@@ -11,13 +11,15 @@ class authService {
         const login = paylaod.email;
         const userCredentials = await dbService.getCredentials(login);
         if (userCredentials) {
-            throw ApiError.BadRequest('Этот email уже привязан к учетной записи'); //aaaaaaaaaaaaaaaaaaaa
+            //throw ApiError.BadRequest('Этот email уже привязан к учетной записи'); //aaaaaaaaaaaaaaaaaaaa
+            return false;
         }
         const id_employee = (await dbService.newEmployee(paylaod)).id_employee;
         const password = passfather();
         const hashedPassword = await bcrypt.hash(password, 3);
         await dbService.registerEmployee(login, hashedPassword, id_employee, ['user'], paylaod.email);
         mailService.sendCred(paylaod.email, login, password);
+        return true;
     }
     async login(login, password) {
         const userCredentials = await dbService.getCredentials(login);
