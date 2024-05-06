@@ -1,6 +1,6 @@
 <template>
-  <div class="left-menu">
-    <div class="menu">
+  <div v-bind:class = "(isMobile)?'left-menu mobile':'left-menu'" v-if="this.$store.getters['leftMenu/isVisible'] || !isMobile">
+    <div class="menu" v-if="this.$route.name == 'mainPage'">
       <h3>Уведомления</h3>
       <div class="bList">
         <button v-for="(type, index) in this.$store.getters['notificationTypes/getnotificationTypes']" @click="changeType(type.id_type)" v-bind:key="index"><span>{{
@@ -9,10 +9,12 @@
       </div>
     </div>
     <div class="menu">
+      <h3>Меню</h3>
       <div class="bList">
-        <button @click="newNotificationModal()"><span>Новое уведомление</span></button>
+        <button @click="toMainPage()" v-if="this.$route.name != 'mainPage'"><span>На гланую страницу</span></button>
+        <button @click="newNotificationModal()" v-if="this.$route.name == 'mainPage'"><span>Новое уведомление</span></button>
         <button @click="sendedNotificationsPage()"><span>Отправленные уведомления</span></button>
-        <button @click="registerPage()" v-if="this.$store.getters['user/getRoles'].includes('register')"><span>Регистрация новых пользователей</span></button>
+        <button @click="registerPage()" v-if="this.$store.getters['user/getRoles'].includes('register')"><span>Регистрация</span></button>
       </div>
     </div>
   </div>
@@ -24,27 +26,47 @@ export default {
   data() {
     return {
       selectedTypeId: null,
+      isMobile: false
     }
   },
   async beforeCreate() {
     await this.$store.dispatch('notificationTypes/loadUnreactedCount');
+    
+  },
+  created(){
+    this.isMobile = ((document.documentElement.clientWidth <= 800));
+    window.addEventListener('resize', this.getDimensions);
   },
   methods: {
+    getDimensions() {
+      this.isMobile = ((document.documentElement.clientWidth <= 800));
+    },
     changeType(index) {
+      this.$store.commit('leftMenu/SET_VISIBLE');
       this.$emit('changeType', index);
     },
     newNotificationModal() {
+      this.$store.commit('leftMenu/SET_VISIBLE');
       this.$emit('newNotificationModal');
     },
     registerPage(){
+      this.$store.commit('leftMenu/SET_VISIBLE');
       this.$router.push({name: "register"});
     },
     sendedNotificationsPage(){
+      this.$store.commit('leftMenu/SET_VISIBLE');
       this.$router.push({name: "sendedNotificationsPage"});
+    },
+    toMainPage(){
+      this.$store.commit('leftMenu/SET_VISIBLE');
+      this.$router.push({name: "mainPage"});
     }
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.getDimensions);
   }
 }
-</script scoped>
+</script>
 
 
 <style scoped>
@@ -108,6 +130,13 @@ span{
   height: 11px;
   width: 11px;
   
+}
+
+.mobile {
+  position: absolute;
+  z-index: 100;
+  height: calc(100% - 53px);
+  background-color: #DEDEDE;
 }
 </style>
 

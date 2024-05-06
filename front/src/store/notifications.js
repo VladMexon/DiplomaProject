@@ -13,7 +13,7 @@ export default {
       return state.notifications.map(notification=>notification.id_notification);
     },
     getButtons(state) {
-      return state.buttons
+      return state.buttons;
     },
     getFirstId(state) {
       return state.firstId
@@ -126,19 +126,6 @@ export default {
         console.log(e);
       }
 
-    },
-    async loadNewNotifications({ commit, getters }, id_notification_type) {
-      try {
-        const response = await api.notification.getNewNotifications({ lastId: getters.getLastId, id_notification_type });
-        if (response.data.notifications.length > 0) {
-          commit('ADD_NOTIFICATIONS', response.data);
-          //commit('SET_LASTID', response.data.notifications[0].id_sended);
-          return true;
-        }
-        return false;
-      } catch (e) {
-        console.log(e);
-      }
     },
     async loadNewNotificationsNoId({ commit, getters }, id_notification_type) {
       try {

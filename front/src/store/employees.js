@@ -6,7 +6,7 @@ export default {
   },
   getters: {
     getEmployees(state) {
-      return state.employees
+      return state.employees.filter(employee => employee.valid);
     },
     getEmployeeNameById: (state) => (id) => {
       let employee = state.employees.find(employee => employee.id_employee == id);

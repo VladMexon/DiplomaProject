@@ -15,7 +15,7 @@ export default {
             //console.log(id);
             return state.notificationTypes.find(type => type.id_type == id).type_name;
           }else{
-            return [];
+            return '[REDACTED]'//;
           }
         }else{
           return 'Все';

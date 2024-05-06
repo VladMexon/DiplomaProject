@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-    <leftMenuComponent @changeType="changeType" @newNotificationModal="openNewNotificationModal()" v-if="!detectMob()"/>
-    <leftMenuComponent @changeType="changeType" @newNotificationModal="openNewNotificationModal()" v-if="detectMob() && this.$store.getters['leftMenu/isVisible']" class="mobile"/>
+    <leftMenuComponent @changeType="changeType" @newNotificationModal="openNewNotificationModal()"/>
     <notificationListComponent :typeId="currnentType" v-bind:key="currnentType" />
     <newNotificationsListComponent />
   </div>
@@ -19,7 +18,7 @@ export default {
     leftMenuComponent,
     newNotificationComponent,
     notificationListComponent,
-    newNotificationsListComponent
+    newNotificationsListComponent,
   },
   data() {
     return {
@@ -45,9 +44,6 @@ export default {
       this.newNotificationModalOpened = !this.newNotificationModalOpened;
       console.log(this.newNotificationModalOpened);
     },
-    detectMob() {
-      return ((window.innerWidth <= 800));
-    }
   },
   beforeUnmount() {
     clearInterval(this.timer)
@@ -60,12 +56,5 @@ export default {
 .container {
   display: flex;
   height: calc(100% - 53px);
-}
-
-.mobile {
-  position: absolute;
-  z-index: 100;
-  height: calc(100% - 53px);
-  background-color: #DEDEDE;
 }
 </style>

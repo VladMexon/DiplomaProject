@@ -7,7 +7,22 @@ export default {
     },
     getters: {
         getData(state) {
-            return state.data
+            if(state.data){
+                return state.data.sort((a, b) => {
+                    let intA = parseInt(a.id_notification);
+                    let intB = parseInt(b.id_notification);
+                    if (intA < intB) {
+                      return 1;
+                    }
+                    if (intA > intB) {
+                      return -1;
+                    }
+                    return 0;
+                  }); 
+            }else{
+                return [];
+            }
+            
         },
         getLastId(state) {
             return state.last_id;

@@ -6,22 +6,28 @@
     <p>Тип: {{ typeName }}</p>
     <p>Время отправки: {{ sendTime }}</p>
     <div class="reactionButtons" v-if="!reacted">
-      <button class="reactButton" v-for="(button, indexB) in buttons" @click="react(id_sended, button.id_send_notification)"
-        v-bind:key="indexB">{{ button.button_text }}</button>
+      <button class="reactButton" v-for="(button, indexB) in buttons"
+        @click="react(id_sended, button.id_send_notification)" v-bind:key="indexB">{{ button.button_text }}</button>
       <button class="reactButton" @click="react(id_sended, null)" v-if="buttons.length == 0">Прочитано</button>
     </div>
     <div class="comments">
-      <div class="commentsHeader"><span>Комментарии ({{this.$store.getters['commentsStore/getCommentsCountById'](id_notification)}})</span><button @click="showComments()">Показать</button></div>
-      <div class="commentsContainer" v-if="this.$store.getters['commentsStore/getUpdateIds'].includes(this.id_notification)">
+      <div class="commentsHeader"><span>Комментарии
+          ({{ this.$store.getters['commentsStore/getCommentsCountById'](id_notification) }})</span><button
+          @click="showComments()">Показать</button></div>
+      <div class="commentsContainer"
+        v-if="this.$store.getters['commentsStore/getUpdateIds'].includes(this.id_notification)">
         <div class="commentList">
-          <div class="comment" v-for="(comment, indexC) in this.$store.getters['commentsStore/getCommentsByNotifId'](id_notification)" :key="indexC">
+          <div class="comment"
+            v-for="(comment, indexC) in this.$store.getters['commentsStore/getCommentsByNotifId'](id_notification)"
+            :key="indexC">
             <p>{{ comment.text }}</p>
-            <p>{{ this.$store.getters['employees/getEmployeeNameById'](comment.id_author)}}</p>
+            <p>{{ this.$store.getters['employees/getEmployeeNameById'](comment.id_author) }}</p>
             <p>{{ new Date(comment.time).toString() }}</p>
           </div>
         </div>
         <div class="controls">
-          <textarea v-model="commentText" placeholder="Введите комментарий"></textarea><button class="commentSend" @click="send()">Отправить</button>
+          <textarea v-model="commentText" placeholder="Введите комментарий"></textarea><button class="commentSend"
+            @click="send()">Отправить</button>
         </div>
       </div>
     </div>
@@ -33,8 +39,8 @@
 export default {
   name: 'notificationComponent',
   props: ['header', 'text', 'typeName', 'senderName', 'sendTime', 'buttons', 'reacted', 'id_sended', 'id_notification'],
-  data(){
-    return{
+  data() {
+    return {
       commentText: ''
     }
   },
@@ -43,17 +49,17 @@ export default {
       await this.$store.dispatch('notifications/react', { id_sended, id_send_notification });
       await this.$store.dispatch('notificationTypes/loadUnreactedCount');
     },
-    async showComments(){
-      if(!this.$store.getters['commentsStore/getUpdateIds'].includes(this.id_notification)){
-        await this.$store.dispatch('commentsStore/getComments', {id_notification: this.id_notification});
+    async showComments() {
+      if (!this.$store.getters['commentsStore/getUpdateIds'].includes(this.id_notification)) {
+        await this.$store.dispatch('commentsStore/getComments', { id_notification: this.id_notification });
         this.$store.commit('commentsStore/ADD_UPDATE_ID', this.id_notification);
-      }else{
+      } else {
         this.$store.commit('commentsStore/DELETE_UPDATE_ID', this.id_notification);
       }
     },
-    async send(){
-      await this.$store.dispatch('commentsStore/sendComment', { id_notification: this.id_notification, text: this.commentText, id_author: this.$store.getters['user/getUser'].id_employee});
-      this.commentText = '';
+    async send() {
+      if (await this.$store.dispatch('commentsStore/sendComment', { id_notification: this.id_notification, text: this.commentText, id_author: this.$store.getters['user/getUser'].id_employee }))
+        this.commentText = '';
     }
   }
 }
@@ -84,7 +90,7 @@ p {
 
 .reactionButtons {
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   background-color: #b6b6b6;
   padding: 5px;
   border-radius: 5px;
@@ -110,7 +116,7 @@ p {
   background-color: rgb(189, 189, 189);
 }
 
-.commentsHeader{
+.commentsHeader {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -121,7 +127,7 @@ p {
   margin: 3px;
 }
 
-.controls{
+.controls {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -132,7 +138,7 @@ p {
   margin: 3px;
 }
 
-.commentList{
+.commentList {
   background-color: #b6b6b6;
   padding: 5px;
   border-radius: 5px;
@@ -140,17 +146,19 @@ p {
   height: 300px;
   overflow: auto;
 }
-.comments{
+
+.comments {
   background-color: #a5a4a4;
   padding: 5px;
   border-radius: 5px;
   margin: 3px;
 }
-textarea{
+
+textarea {
   width: 100%;
 }
 
-.comment{
+.comment {
   background-color: #a5a4a4;
   padding: 5px;
   border-radius: 5px;

@@ -1,11 +1,11 @@
 <template>
     <div class="registerPage">
-        <div class="label">
-            <h1>Регистация новых сотрудников</h1>
-        </div>
+        <leftMenuComponent />
         <div class="container">
+            <div class="label">
+                <h1>Регистация новых сотрудников</h1>
+            </div>
             <div class="registerForm">
-                <button class="back" @click="mainPage">На страницу приложения</button>
                 <p class="error" v-if="v$.department.$error">Укажите департамент</p>
                 <label>
                     Отдел:
@@ -54,12 +54,14 @@
 
 <script>
 import newNotificationsListComponent from '@/components/newNotificationsListComponent.vue';
+import leftMenuComponent from '@/components/leftMenuComponent.vue';
 import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 export default {
     name: 'registerPage',
     components: {
-        newNotificationsListComponent
+        newNotificationsListComponent,
+        leftMenuComponent,
     },
     setup() {
         return ({ v$: useVuelidate() })
@@ -82,18 +84,15 @@ export default {
                 try {
                     let payload = { first_name: this.firstName, second_name: this.secondName, middle_name: this.thridName, id_position: this.position, id_department: this.department, email: this.emailValue };
                     const result = await this.$api.auth.register(payload);
-                    if(result === 'ok'){
+                    if (result === 'ok') {
                         alert('Пользователь зарегистрирован');
-                    }else{
+                    } else {
                         alert('Этот email уже привязан к учетной записи');
                     }
                 } catch (e) {
                     console.log(e);
                 }
             }
-        },
-        mainPage() {
-            this.$router.push({ name: "mainPage" });
         }
     },
     created() {
@@ -120,13 +119,11 @@ export default {
 <style scoped>
 .registerPage {
     height: calc(100% - 53px);
+    display: flex;
 }
 
-.container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding-top: 200px;
+.container{
+width: 100%;
 }
 
 .registerForm {
@@ -155,10 +152,10 @@ h1 {
     padding: 10px;
 }
 
-.error{
-  font-size: 12px;
-  color: red;
-  margin: 0px;
-  margin-top: 5px;
+.error {
+    font-size: 12px;
+    color: red;
+    margin: 0px;
+    margin-top: 5px;
 }
 </style>

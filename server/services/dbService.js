@@ -117,7 +117,7 @@ class authService{
     async  getEmployee(id){
         return db.one({
             name: 'findEmployee',
-            text: 'SELECT * FROM system.employees WHERE id_employee = $1 AND valid = true',
+            text: 'SELECT * FROM system.employees WHERE id_employee = $1',
             values: [id]
         });
     }
@@ -125,7 +125,7 @@ class authService{
     async getAllEmployees(){
         return db.many({
             name: 'getAllEmployees',
-            text: 'SELECT * FROM system.employees WHERE valid = true',
+            text: 'SELECT * FROM system.employees',
             values: []
         });
     }

@@ -1,5 +1,6 @@
 <template>
     <div class="sendedNotificationsPage">
+        <leftMenuComponent />
         <div class="listContainer" ref="notifList" @scroll="listScroll">
             <div class="sendedNotification"
                 v-for="(notification, indexN) in this.$store.getters['sendedNotifications/getData']"
@@ -11,8 +12,9 @@
             + (curr.state ? 1 : 0), 0) }}/{{ notification.recipients_data.length }}</p>
                 <div class="comments">
                     <div class="commentsHeader"><span>Комментарии
-                            ({{ this.$store.getters['commentsStore/getCommentsCountById'](notification.id_notification) }})</span><button
-                            @click="showComments(notification.id_notification)">Показать</button></div>
+                            ({{ this.$store.getters['commentsStore/getCommentsCountById'](notification.id_notification)
+                            }})</span><button @click="showComments(notification.id_notification)">Показать</button>
+                    </div>
                     <div class="commentsContainer"
                         v-if="this.$store.getters['commentsStore/getUpdateIds'].includes(notification.id_notification)">
                         <div class="commentList">
@@ -49,10 +51,12 @@
 
 <script>
 import newNotificationsListComponent from '@/components/newNotificationsListComponent.vue';
+import leftMenuComponent from '@/components/leftMenuComponent.vue';
 export default {
     name: 'sendedNotificationsPage',
     components: {
-        newNotificationsListComponent
+        newNotificationsListComponent,
+        leftMenuComponent,
     },
     data() {
         return {
@@ -81,8 +85,8 @@ export default {
             }
         },
         async send(id_notification) {
-            await this.$store.dispatch('commentsStore/sendComment', { id_notification: id_notification, text: this.commentText, id_author: this.$store.getters['user/getUser'].id_employee });
-            this.commentText = '';
+            if (await this.$store.dispatch('commentsStore/sendComment', { id_notification, text: this.commentText, id_author: this.$store.getters['user/getUser'].id_employee }))
+                this.commentText = '';
         },
         async listScroll() {
             const list = this.$refs.notifList;
@@ -122,10 +126,12 @@ export default {
 <style scoped>
 .sendedNotificationsPage {
     height: calc(100% - 53px);
+    display: flex;
 }
 
 .listContainer {
     height: 100%;
+    width: 100%;
     overflow: auto;
 }
 

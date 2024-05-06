@@ -3,9 +3,9 @@ import api from '../api/index.js'
 export default {
   namespaced: true,
   state: {
-    user: null,
+    user: {},
     auth: false,
-    roles: null
+    roles: []
   },
   getters: {
     getUser(state) {

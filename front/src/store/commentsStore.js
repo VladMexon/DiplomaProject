@@ -93,7 +93,6 @@ export default {
                     //console.log(response.data);
                     commit('UPDATE_COMMENTS_COUNT', response.data);
                 }  
-                
             } catch (e) {
                 console.log(e);
             }

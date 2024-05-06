@@ -1,8 +1,9 @@
 <template>
   <div class="header">
     <div class="logo">
-      <img alt="logo" src="../assets/logo.webp" v-if="!detectMob()">
-      <button @click="leftMenuVisible" v-if="detectMob()" class="menuButton"> <img alt="menu" src="../assets/menu.png"> </button>
+      <img alt="logo" src="../assets/logo.webp" v-if="!isMobile">
+      <button @click="leftMenuVisible" v-if="isMobile" class="menuButton"> <img alt="menu" src="../assets/menu.png">
+      </button>
       <a href="/app">Система оповещения</a>
     </div>
     <div class="name" v-if="userName">
@@ -24,7 +25,8 @@ export default {
   name: 'headerComponent',
   data() {
     return {
-      isModalOpen: false
+      isModalOpen: false,
+      isMobile: false
     }
   },
   computed: {
@@ -40,6 +42,14 @@ export default {
       return null;
     }
   },
+  created() {
+    window.addEventListener('resize', this.getDimensions);
+    this.isMobile = ((document.documentElement.clientWidth <= 800));
+  },
+  beforeUnmount() {
+    clearInterval(this.timer)
+    window.removeEventListener('resize', this.getDimensions);
+  },
   methods: {
     async logout() {
       await this.$store.dispatch('user/logout');
@@ -51,12 +61,12 @@ export default {
     openModal() {
       this.isModalOpen = !this.isModalOpen;
     },
-    detectMob() {
-      return ((window.innerWidth <= 800));
-    },
     leftMenuVisible() {
-      return this.$store.commit('leftMenu/SET_VISIBLE');
-    }
+      this.$store.commit('leftMenu/SET_VISIBLE');
+    },
+    getDimensions() {
+      this.isMobile = ((document.documentElement.clientWidth <= 800));
+    },
   }
 }
 
