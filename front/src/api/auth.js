@@ -8,6 +8,12 @@ export default function(instance) {
       },
       logout(payload) {
         return instance.get('auth/logout', payload)
+      },
+      getUsersData(payload){
+        return instance.post('auth/getUsersData', payload)
+      },
+      updateRecipientsInfo(payload){
+        return instance.post('auth/updateRecipientsInfo', payload);
       }
     }
   }

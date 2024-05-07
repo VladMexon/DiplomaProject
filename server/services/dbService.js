@@ -250,6 +250,33 @@ class authService{
             values: [id_notification, text, id_author]
         });
     }
+    async getUsersData(id_last){
+        return db.manyOrNone({
+            name: 'getUsersData',
+            text: 'SELECT em.id_employee, em.id_position, em.id_department, em.first_name, em.second_name, em.middle_name, em.valid, (select count(*) <> 0 as registered from system.credentials as cr where cr.id_employee = em.id_employee AND cr.valid), (select roles from system.credentials as cr where cr.id_employee = em.id_employee AND cr.valid) FROM system.employees as em WHERE em.id_employee < $1 ORDER BY em.id_employee DESC LIMIT 20',
+            values: [id_last]
+        });
+    }
+    async getUsersDataNoIdLast(){
+        return db.manyOrNone({
+            name: 'getUsersDataNoIdLast',
+            text: 'SELECT em.id_employee, em.id_position, em.id_department, em.first_name, em.second_name, em.middle_name, em.valid, (select count(*) <> 0 as registered from system.credentials as cr where cr.id_employee = em.id_employee AND cr.valid), (select roles from system.credentials as cr where cr.id_employee = em.id_employee AND cr.valid) FROM system.employees as em ORDER BY em.id_employee DESC LIMIT 20',
+        });
+    }
+    async updateRecipient(first_name, second_name, middle_name, id_deparment, id_position, valid, id_employee){
+        return db.none({
+            name: 'updateRecipient',
+            text: 'UPDATE system.employees SET first_name = $1, second_name = $2, middle_name = $3, id_department = $4, id_position = $5, valid = $6 WHERE id_employee = $7',
+            values: [first_name, second_name, middle_name, id_deparment, id_position, valid, id_employee]
+        });
+    }
+    async updateRoles(roles, id_employee){
+        return db.none({
+            name: 'updateRoles',
+            text: 'UPDATE system.credentials SET roles = $1 WHERE id_employee = $2',
+            values: [JSON.stringify(roles), id_employee]
+        });
+    }
 }
 
 module.exports = new authService();

@@ -62,7 +62,7 @@ export default {
     },
     async checkAuth({ commit },) {
       try {
-        const response = await axios.get('http://localhost:3000/auth/refresh', { withCredentials: true });
+        const response = await axios.get('https://notificationsystemtest.crabdance.com:3000/auth/refresh', { withCredentials: true });
 
         localStorage.setItem('token', response.data.accessToken);
         commit('SET_USER', response.data.userData);

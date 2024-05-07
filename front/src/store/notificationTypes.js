@@ -13,9 +13,14 @@ export default {
         if(id != 0){
           if(state.notificationTypes.length != 0){
             //console.log(id);
-            return state.notificationTypes.find(type => type.id_type == id).type_name;
+            const type = state.notificationTypes.find(type => type.id_type == id);
+            if(type){
+              return type.type_name;
+            }else{
+              return '[redacted]';
+            }
           }else{
-            return '[REDACTED]'//;
+            return '???';
           }
         }else{
           return 'Все';

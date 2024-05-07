@@ -14,7 +14,7 @@
         <button @click="toMainPage()" v-if="this.$route.name != 'mainPage'"><span>На гланую страницу</span></button>
         <button @click="newNotificationModal()" v-if="this.$route.name == 'mainPage'"><span>Новое уведомление</span></button>
         <button @click="sendedNotificationsPage()"><span>Отправленные уведомления</span></button>
-        <button @click="registerPage()" v-if="this.$store.getters['user/getRoles'].includes('register')"><span>Регистрация</span></button>
+        <button @click="registerPage()" v-if="this.$store.getters['user/getRoles'].includes('register') || this.$store.getters['user/getRoles'].includes('admin')"><span>Регистрация</span></button>
       </div>
     </div>
   </div>

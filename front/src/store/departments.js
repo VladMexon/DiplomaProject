@@ -7,6 +7,11 @@ export default {
     getters: {
       getDepartments(state) {
         return state.departments
+      },
+      getDepartmentName: (state) => (id_department) => {
+        if(id_department){
+          return state.departments.find(item => item.id_department == id_department).department_name;
+        }
       }
     },
     mutations: {

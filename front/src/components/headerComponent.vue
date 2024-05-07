@@ -6,7 +6,7 @@
       </button>
       <a href="/app">Система оповещения</a>
     </div>
-    <div class="name" v-if="userName">
+    <div class="name" v-if="this.$store.getters['user/getAuthState']">
       <p>{{ userName }}</p>
       <button class="modalButton" @click="openModal"><img src="../assets/arrowDown.png" width="30" height="30"
           alt="submit" /></button>

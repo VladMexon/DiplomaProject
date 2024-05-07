@@ -68,6 +68,20 @@ class authService {
         const userInfo = dbService.getEmployee(id_employee);
         return userInfo;
     }
+    async getUsersData(id_last){
+        if(id_last != 0){
+            return await dbService.getUsersData(id_last);
+        }
+        else{
+            return await dbService.getUsersDataNoIdLast();
+        }
+    }
+    async updateRecipientsInfo(recipients){
+        recipients.forEach(async (recipient) => {
+            await dbService.updateRecipient(recipient.first_name, recipient.second_name, recipient.middle_name, recipient.id_department, recipient.id_position, recipient.valid, recipient.id_employee, recipient.roles);
+            await dbService.updateRoles(recipient.roles, recipient.id_employee);
+        });
+    }
 }
 
 module.exports = new authService();

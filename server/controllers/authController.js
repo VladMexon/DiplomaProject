@@ -56,6 +56,32 @@ class authController{
             next(e);
         }
     }
+    async getUsersData(req, res, next){
+        try{
+            const id_last = req.body.id_last;
+            if(id_last != null){
+                const response = await authService.getUsersData(id_last);
+                res.json(response);
+            }
+            else{
+                throw ApiError.BadRequest("Отсутствует id_last");
+            }
+        }catch(e){
+            next(e);
+        }
+    }
+    async updateRecipientsInfo(req, res, next){
+        try{
+            let data = req.body;
+            console.log(data);
+            if(data.length > 0){
+                await authService.updateRecipientsInfo(data);
+                res.json('ok');
+            }
+        }catch(e){
+            next(e);
+        }
+    }
 }
 
 module.exports = new authController();

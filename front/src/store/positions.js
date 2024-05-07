@@ -7,6 +7,11 @@ export default {
   getters: {
     getPositions(state) {
       return state.positions
+    },
+    getPositionName: (state) => (id_position) =>{
+      if(state.positions){
+        return state.positions.find(item => item.id_position == id_position).position_name;
+      }
     }
   },
   mutations: {
