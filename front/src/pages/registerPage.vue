@@ -45,8 +45,9 @@
                 </label>
                 <button class="send" @click="send">Отправить</button>
             </div>
-            <button class="update" @click="update">Обновить</button>
-            <button class="sendUpdated" @click="sendUpdated">Отправить обновление</button>
+            <div class="buttons"><button class="update" @click="update">Обновить</button>
+            <button class="sendUpdated" @click="sendUpdated">Отправить обновление</button></div>
+            
             <div class="usersData" ref="usersList" @scroll="listScroll" v-bind:key="ididid">
                 <div v-for="(userData, indexU) in this.$store.getters['usersData/getUsers']" v-bind:key="indexU"
                     class="userData">
@@ -63,7 +64,7 @@
                         Отдел:
                         <select name="departmentSelection"  v-bind:id="userData.id_employee  + ' d'" v-bind:oninput="this.departmentChangeHandler">
                             <option v-bind:value="department.id_department"
-                                v-bind:selected="(department.id_department == userData.id_department) ? 'selected' : ''"
+                                v-bind:selected="(department.id_department == userData.id_department) ? 'selected' : null"
                                 v-for="(department, index) in $store.getters['departments/getDepartments']"
                                 v-bind:key="index">{{ department.department_name }}</option>
                         </select>
@@ -254,11 +255,20 @@ h1 {
 }
 
 .userData {
-    margin: 3px;
+    margin: 8px;
     display: flex;
     flex-direction: column;
     background-color: #cccccc;
-    padding: 10px;
+    padding: 3px;
     border-radius: 10px;
+}
+.userData label{
+    padding: 5px;
+}
+.buttons{
+    display: flex;
+}
+.buttons button{
+    width: 100%;
 }
 </style>
