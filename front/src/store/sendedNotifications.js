@@ -22,7 +22,6 @@ export default {
             }else{
                 return [];
             }
-            
         },
         getLastId(state) {
             return state.last_id;
