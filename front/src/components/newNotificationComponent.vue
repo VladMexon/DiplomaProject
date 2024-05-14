@@ -50,12 +50,12 @@
         </div>
       </div>
       <div class="block">
-        <h4>Кнопочки</h4>
+        <h4>Реакции</h4>
         <div class="buttonList">
-          <button @click="addButton">Добавить кнопочку</button>
-          <button @click="removeButton">Убавить кнопочку</button>
+          <button @click="addButton">Добавить реакцию</button>
+          <button @click="removeButton">Удалить реакцию</button>
           <div v-for="index in numOfButtonst" v-bind:key="index" class="newButton">
-            <input type="text" placeholder="Введите текст кнопочки" ref="buttonName" />
+            <input type="text" placeholder="Введите имя реакции" ref="buttonName" />
             <div>
               Настройка ответа
               <button @click="showSttings(index)">Показать/Скрыть</button>
@@ -396,8 +396,9 @@ textarea {
 }
 
 .form {
-  height: 500px;
+  height: auto;
   overflow: auto;
+  max-height: 700px;
 }
 
 .sendNotification {

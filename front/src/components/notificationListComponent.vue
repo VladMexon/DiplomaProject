@@ -9,7 +9,7 @@
         v-bind:key="index" :header="notification.notification_header" :text="notification.notification_text"
         :typeName="$store.getters['notificationTypes/getTypeNameById'](notification.id_notification_type)"
         :senderName="$store.getters['employees/getEmployeeNameById'](notification.id_sender)"
-        :sendTime="new Date(notification.time).toString()"
+        :sendTime="notification.time"
         :buttons="$store.getters['notifications/getButtonsByNotifId'](notification.id_notification)"
         :reacted="notification.is_reacted" :id_sended="notification.id_sended"
         :id_notification="notification.id_notification" />

@@ -49,15 +49,16 @@ class authService {
         if (!refresh_token) {
             throw ApiError.UnauthorizedError();
         }
-        const userData = tokenService.validateRefreshToken(refresh_token); //id_employee, id_position
-        const userCredentials = await dbService.getCredentialsByIdEmployee(userData.id_employee);
-        const tokenFromDb = dbService.getRefreshToken(refresh_token);
-        if (!userData || !tokenFromDb) {
+        //const userData = tokenService.validateRefreshToken(refresh_token); //лишнее. можно конечно, но зачем?
+        const tokenFromDb = await dbService.getRefreshToken(refresh_token);
+        const userCredentials = await dbService.getCredentialsByIdEmployee(tokenFromDb.id_employee);
+        if (!tokenFromDb || !userCredentials) {
             throw ApiError.UnauthorizedError();
         }
-        const employeeInfo = await dbService.getEmployee(userData.id_employee);
-        const tokens = await tokenService.generateToken({ id_employee: userData.id_employee, id_position: userData.id_position, roles: userCredentials.roles, time: Date.now() }); //ВАЖНО
-        await tokenService.saveToken(tokens.refreshToken, userData.id_employee);
+        const employeeInfo = await dbService.getEmployee(tokenFromDb.id_employee);
+        const tokens = await tokenService.generateToken({ id_employee: tokenFromDb.id_employee, id_position: employeeInfo.id_position, roles: userCredentials.roles, time: Date.now() }); //ВАЖНО
+        await dbService.deleteRefreshToken(refresh_token);
+        await tokenService.saveToken(tokens.refreshToken, tokenFromDb.id_employee);
         return {
             tokens,
             employeeInfo,

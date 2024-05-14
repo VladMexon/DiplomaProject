@@ -3,7 +3,7 @@
         <leftMenuComponent />
         <div class="container">
             <div class="label">
-                <h1>Регистация новых сотрудников</h1>
+                <h2>Регистация новых сотрудников</h2>
             </div>
             <div class="registerForm">
                 <p class="error" v-if="v$.department.$error">Укажите департамент</p>
@@ -45,9 +45,11 @@
                 </label>
                 <button class="send" @click="send">Отправить</button>
             </div>
+            <div class="label">
+                <h2>Изменение данных</h2>
+            </div>
             <div class="buttons"><button class="update" @click="update">Обновить</button>
             <button class="sendUpdated" @click="sendUpdated">Отправить обновление</button></div>
-            
             <div class="usersData" ref="usersList" @scroll="listScroll" v-bind:key="ididid">
                 <div v-for="(userData, indexU) in this.$store.getters['usersData/getUsers']" v-bind:key="indexU"
                     class="userData">
@@ -206,6 +208,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.label {
+  border-bottom: solid;
+}
+
 .registerPage {
     height: calc(100% - 53px);
     display: flex;
@@ -213,6 +219,9 @@ export default {
 
 .container {
     width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 .registerForm {
@@ -220,17 +229,21 @@ export default {
     flex-direction: column;
     background-color: #cccccc;
     padding: 10px;
+    margin: 5px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
 }
 
 label {
     background-color: #bdbdbd;
     border-radius: 8px;
-    padding: 10px;
+    padding: 5px;
     margin: 3px;
 }
 
-h1 {
-    margin: 0;
+h2 {
+    margin: 0px;
 
 }
 
@@ -238,7 +251,9 @@ h1 {
     text-align: center;
     background-color: #c7c7c7;
     border-radius: 10px;
-    padding: 10px;
+    padding: 5px;
+    margin: 5px;
+    width: 90%;
 }
 
 .error {
@@ -252,6 +267,7 @@ h1 {
     width: 100%;
     height: calc(100% - 397px);
     overflow: auto;
+    width: 70%;
 }
 
 .userData {
@@ -267,8 +283,14 @@ h1 {
 }
 .buttons{
     display: flex;
+    background-color: #c7c7c7;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 5px;
+    width: 90%;
 }
 .buttons button{
     width: 100%;
+    margin: 3px;
 }
 </style>

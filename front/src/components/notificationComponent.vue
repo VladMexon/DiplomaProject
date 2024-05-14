@@ -1,14 +1,15 @@
 <template>
   <div class="container">
     <h3>{{ header }}</h3>
-    <p v-if="text">{{ text }}</p>
-    <p>Отправитель: {{ senderName }}</p>
-    <p>Тип: {{ typeName }}</p>
-    <p>Время отправки: {{ sendTime }}</p>
+    <pre v-if="text">{{ text }}</pre>
     <div class="reactionButtons" v-if="!reacted">
       <button class="reactButton" v-for="(button, indexB) in buttons"
         @click="react(id_sended, button.id_send_notification)" v-bind:key="indexB">{{ button.button_text }}</button>
       <button class="reactButton" @click="react(id_sended, null)" v-if="buttons.length == 0">Прочитано</button>
+    </div>
+    <div class="info">
+      <span>{{ getTimeString(sendTime) }}, {{ typeName.toLowerCase() }}</span>
+      <span>{{ senderName }}</span>
     </div>
     <div class="comments">
       <div class="commentsHeader"><span>Комментарии
@@ -21,8 +22,10 @@
             v-for="(comment, indexC) in this.$store.getters['commentsStore/getCommentsByNotifId'](id_notification)"
             :key="indexC">
             <p>{{ comment.text }}</p>
-            <p>{{ this.$store.getters['employees/getEmployeeNameById'](comment.id_author) }}</p>
-            <p>{{ new Date(comment.time).toString() }}</p>
+            <div class="info">
+              <span>{{ getTimeString(comment.time) }}</span>
+              <span>{{ this.$store.getters['employees/getEmployeeNameById'](comment.id_author) }}</span>
+            </div>
           </div>
         </div>
         <div class="controls">
@@ -60,6 +63,15 @@ export default {
     async send() {
       if (await this.$store.dispatch('commentsStore/sendComment', { id_notification: this.id_notification, text: this.commentText, id_author: this.$store.getters['user/getUser'].id_employee }))
         this.commentText = '';
+    },
+    getTimeString(sendTime) {
+      let time = new Date(sendTime);
+      var today = new Date();
+      if (time.toDateString() == today.toDateString()) {
+        return `${("0" + time.getHours()).slice(-2)}:${("0" + time.getMinutes()).slice(-2)}`;
+      } else {
+        return `${("0" + time.getDate()).slice(-2)}.${("0" + (time.getMonth() + 1)).slice(-2)}.${time.getFullYear()}`;
+      }
     }
   }
 }
@@ -73,7 +85,7 @@ export default {
   border-radius: 10px;
   padding: 10px;
   width: 70%;
-  max-width: 400px;
+  max-width: 450px;
 }
 
 h3 {
@@ -86,6 +98,15 @@ p {
   padding: 5px;
   border-radius: 5px;
   margin: 3px;
+}
+
+pre {
+  background-color: #b6b6b6;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
+  font-size: 15px;
+  white-space: pre-wrap;
 }
 
 .reactionButtons {
@@ -163,5 +184,14 @@ textarea {
   padding: 5px;
   border-radius: 5px;
   margin: 3px;
+}
+
+.info {
+  background-color: #b6b6b6;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 3px;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

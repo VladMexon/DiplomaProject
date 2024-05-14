@@ -5,11 +5,11 @@
             <div class="sendedNotification"
                 v-for="(notification, indexN) in this.$store.getters['sendedNotifications/getData']"
                 v-bind:key="indexN">
-                <p class="notificationHeader">Заголовок: {{ notification.notification_header }}</p>
-                <p class="notificationText">Текст: {{ notification.notification_text }}</p>
-                <p class="notificationSendTime">Время отправки: {{ new Date(notification.send_time).toString() }}</p>
-                <p class="notificationSendTime">Отреагировали: {{ notification.recipients_data.reduce((acc, curr) => acc
-            + (curr.state ? 1 : 0), 0) }}/{{ notification.recipients_data.length }}</p>
+                <p class="notificationHeader">{{ notification.notification_header }}</p>
+                <pre v-if="notification.notification_text">{{ notification.notification_text }}</pre>
+                <div class="info">
+                    <span>{{ getTimeString(notification.send_time) }}</span>
+                </div>
                 <div class="comments">
                     <div class="commentsHeader"><span>Комментарии
                             ({{ this.$store.getters['commentsStore/getCommentsCountById'](notification.id_notification)
@@ -22,8 +22,11 @@
                                 v-for="(comment, indexC) in this.$store.getters['commentsStore/getCommentsByNotifId'](notification.id_notification)"
                                 :key="indexC">
                                 <p>{{ comment.text }}</p>
-                                <p>{{ this.$store.getters['employees/getEmployeeNameById'](comment.id_author) }}</p>
-                                <p>{{ new Date(comment.time).toString() }}</p>
+                                <div class="info">
+                                    <span>{{ getTimeString(comment.time) }}</span>
+                                    <span>{{ this.$store.getters['employees/getEmployeeNameById'](comment.id_author)
+                                        }}</span>
+                                </div>
                             </div>
                         </div>
                         <div class="controls">
@@ -32,6 +35,8 @@
                         </div>
                     </div>
                 </div>
+                <p class="notificationSendTime">Отреагировали: {{ notification.recipients_data.reduce((acc, curr) => acc
+            + (curr.state ? 1 : 0), 0) }}/{{ notification.recipients_data.length }}</p>
                 <button class="showDataButton" @click="showData(indexN)">Показать/Скрыть информацию о
                     получателях</button>
                 <div class="recipientsData" v-if="showContentList.includes(indexN)">
@@ -103,6 +108,11 @@ export default {
                     }
                 }
             }
+        },
+        getTimeString(sendTime) {
+            let time = new Date(sendTime);
+
+            return `${("0" + time.getDate()).slice(-2)}.${("0" + (time.getMonth() + 1)).slice(-2)}.${time.getFullYear()} ${("0" + time.getHours()).slice(-2)}:${("0" + time.getMinutes()).slice(-2)}`;
         }
     },
     created() {
@@ -213,5 +223,23 @@ textarea {
     padding: 5px;
     border-radius: 5px;
     margin: 3px;
+}
+
+.info {
+    background-color: #b6b6b6;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 3px;
+    display: flex;
+    justify-content: space-between;
+}
+
+pre {
+    background-color: #b6b6b6;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 3px;
+    font-size: 15px;
+    white-space: pre-wrap;
 }
 </style>

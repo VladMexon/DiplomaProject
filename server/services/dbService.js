@@ -51,7 +51,7 @@ class authService{
     }
 
     async deleteRefreshToken(refreshToken){
-        return db.none({
+        return db.oneOrNone({
             name: 'deleteRefreshToken',
             text: 'DELETE FROM system.refresh_tokens WHERE refresh_token = $1',
             values: [refreshToken]
