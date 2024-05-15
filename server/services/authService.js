@@ -49,7 +49,10 @@ class authService {
         if (!refresh_token) {
             throw ApiError.UnauthorizedError();
         }
-        //const userData = tokenService.validateRefreshToken(refresh_token); //лишнее. можно конечно, но зачем?
+        const userData = tokenService.validateRefreshToken(refresh_token);//лишнее. можно конечно, но зачем? А вот для отслеживания аремени валидности
+        if(!userData){
+            throw ApiError.UnauthorizedError();
+        }
         const tokenFromDb = await dbService.getRefreshToken(refresh_token);
         const userCredentials = await dbService.getCredentialsByIdEmployee(tokenFromDb.id_employee);
         if (!tokenFromDb || !userCredentials) {
