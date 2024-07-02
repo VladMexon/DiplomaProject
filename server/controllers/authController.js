@@ -1,9 +1,9 @@
 const authService = require('../services/authService');
 const ApiError = require('../exeptions/apiError');
-const { validationResult } = require('express-validator');
+//const { validationResult } = require('express-validator');
 
 class authController{
-    async register(req, res, next){ //тут все переделать(вообще никакние токены не нужны) https://www.youtube.com/watch?v=fN25fMQZ2v0 с 37 минуты(реализовать рассылку)
+    async register(req, res, next){
         try{
             const result = await authService.registration(req.body);
             if(result){

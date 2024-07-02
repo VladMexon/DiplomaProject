@@ -18,7 +18,7 @@
 
 <script>
 export default {
-    name: 'newnNotificationNotificationComponent',
+    name: 'newNotificationNotificationComponent',
     props: ['header', 'text', 'typeName', 'senderName', 'sendTime', 'id_sended', 'buttons', 'reacted'],
     methods: {
         closeModal(id_sended) {

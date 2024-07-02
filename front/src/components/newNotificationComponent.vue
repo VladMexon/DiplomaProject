@@ -38,9 +38,9 @@
                   <button class="markAll" @click="markAll(`${indexD}_${indexP}`)">Выделить все</button>
                   <ul>
                     <li v-for="(recipient, indexR) in position.recipients" v-bind:key="indexR">
-                      Сотрудник: {{ recipient.second_name }} {{ recipient.first_name }} {{ recipient.middle_name }}
-                      <input type="checkbox" v-bind:value="indexD + '_' + indexP + '_' + indexR"
+                      Сотрудник: <input type="checkbox" v-bind:value="indexD + '_' + indexP + '_' + indexR"
                         v-bind:id="'d' + indexD + 'p' + indexP + 'r' + indexR" v-model="recipientsCheckboxes">
+                        {{ recipient.second_name }} {{ recipient.first_name }} {{ recipient.middle_name }}
                     </li>
                   </ul>
                 </li>
@@ -87,12 +87,11 @@
                             все</button>
                           <ul>
                             <li v-for="(recipient, indexR) in position.recipients" v-bind:key="indexR">
-                              Сотрудник: {{ recipient.second_name }} {{ recipient.first_name }} {{ recipient.middle_name
-                              }}
-                              <input type="checkbox"
+                              Сотрудник: <input type="checkbox"
                                 v-bind:value="'R' + index + '_' + indexD + '_' + indexP + '_' + indexR"
                                 v-bind:id="'R' + index + 'd' + indexD + 'p' + indexP + 'r' + indexR"
                                 v-model="recipientsCheckboxes">
+                                {{ recipient.second_name }} {{ recipient.first_name }} {{ recipient.middle_name}}
                             </li>
                           </ul>
                         </li>
@@ -411,5 +410,8 @@ textarea {
   color: red;
   margin: 0px;
   margin-top: 5px;
+}
+.markAll{
+  
 }
 </style>
